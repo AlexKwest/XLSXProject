@@ -1,30 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using XLSXProject.model;
 
 namespace XLSXProject
 {
+    
     class Program
     {
+        static string demoPathIn = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName,"data","Operators.xlsx");
+        static string demoPathOut = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName, "data", "Result.xlsx");
+
         static void Main(string[] args)
         {
-            Logic logic = new Logic(@"c:\Project\XLSX\XLSXProject\XLSXProject\data\Operators.xlsx");
-
-
-            List<OperatorModel> operatorModels = logic.SetOperatorList();
-           // operatorModels = operatorModels.Distinct(new MyFile()).ToList();
-
             Console.SetWindowSize(160, Console.WindowHeight * 2);
+
+            Logic logic = new Logic(demoPathIn, demoPathOut);
+            List<OperatorModel> operatorModels = logic.SetOperatorList();
+
             foreach (var result in operatorModels)
             {
                 Console.WriteLine(result.Show());
             }
 
-            logic.PrintResult(@"c:\Project\XLSX\XLSXProject\XLSXProject\data\Result.xlsx");
+            logic.PrintResult("1-15 Операторы", EnumResult.PrintFile.FirsMonth);
             Console.WriteLine("Hello World!");
             Console.WriteLine("Press any key...");
+
+
+            //var resultPoter = (from t in operatorModels
+            //                  where t.Name == "потеряшки"
+            //                  select t.Proideno15).Sum();
+
+            //Console.WriteLine("У потерянка было: " + resultPoter);
+
+            Console.WriteLine("У потерянка было: " + OperatorModel.Poteriashki);
+
             Console.ReadKey();
 
         }
+
     }
 }

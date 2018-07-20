@@ -8,6 +8,8 @@ namespace XLSXProject.model
     {
         private int days15;
         private int proideno15;
+        public static int Poteriashki = 0 ;
+        //private string name;
 
         public string Name { get; set; }
 
@@ -31,7 +33,12 @@ namespace XLSXProject.model
             }
             set
             {
-                proideno15 = Convert.ToInt32(value);
+                if ( Name == "потеряшки")
+                {
+                   // proideno15 = Convert.ToInt32(value);
+                    OperatorModel.Poteriashki += value;
+                }
+                proideno15 = value;
             }
         }
 
@@ -99,6 +106,8 @@ namespace XLSXProject.model
         {
             return obj.Name.GetHashCode();
         }
+
+
 
     }
 }
