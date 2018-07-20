@@ -9,8 +9,6 @@ namespace XLSXProject.model
         private int days15;
         private int proideno15;
         public static int Poteriashki = 0 ;
-        //private string name;
-
         public string Name { get; set; }
 
         public int Days15 // BJ18
@@ -66,6 +64,7 @@ namespace XLSXProject.model
                 return 0;
             }
         }
+
         public float OkladinPay
         {
             get
@@ -96,7 +95,6 @@ namespace XLSXProject.model
                     "----------------------------------------------------------------------------------------------------------------------------------");
         }
 
-
         public bool Equals(OperatorModel x, OperatorModel y)
         {
             return x.Name == y.Name;
@@ -106,8 +104,5 @@ namespace XLSXProject.model
         {
             return obj.Name.GetHashCode();
         }
-
-
-
     }
 }

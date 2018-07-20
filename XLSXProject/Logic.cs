@@ -222,7 +222,7 @@ namespace XLSXProject
             newSheet.Column(7).AutoFit(10);
             newSheet.Column(8).AutoFit(10);
 
-            var modelRows = operatorModels.Count() + 1;
+            var modelRows = operatorModels.Count(x => x.Name != "потеряшки")+ 1;
             string modelRange = "A1:H" + modelRows.ToString();
             var modelTable = newSheet.Cells[modelRange];
 
@@ -232,17 +232,14 @@ namespace XLSXProject
             modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
+            //Style Head table
             modelTable = newSheet.Cells["A1:H1"];
-
             modelTable.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             modelTable.Style.Font.Color.SetColor(Color.DarkGreen);
             modelTable.Style.Border.Top.Style = ExcelBorderStyle.Medium;
             modelTable.Style.Border.Left.Style = ExcelBorderStyle.Medium;
             modelTable.Style.Border.Right.Style = ExcelBorderStyle.Medium;
             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Medium;
-            // Fill worksheet with data to export
-            //newSheet.Cells.LoadFromCollection(Collection: operatorModels, PrintHeaders: true);
-            //modelTable.AutoFitColumns();
         }
     }
 

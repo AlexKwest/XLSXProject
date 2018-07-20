@@ -28,13 +28,6 @@ namespace XLSXProject
             Console.WriteLine("Hello World!");
             Console.WriteLine("Press any key...");
 
-
-            //var resultPoter = (from t in operatorModels
-            //                  where t.Name == "потеряшки"
-            //                  select t.Proideno15).Sum();
-
-            //Console.WriteLine("У потерянка было: " + resultPoter);
-
             Console.WriteLine("У потерянка было: " + OperatorModel.Poteriashki);
 
             Console.ReadKey();
