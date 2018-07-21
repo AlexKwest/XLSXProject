@@ -25,7 +25,8 @@ namespace XLSXProject
             }
 
             logic.PrintResult("1-15 Операторы", EnumResult.PrintFile.FirsMonth);
-            Console.WriteLine("Hello World!");
+            logic.PrintResult("16-31 Операторы", EnumResult.PrintFile.TwoMonth);
+           
             Console.WriteLine("Press any key...");
 
             Console.WriteLine("У потерянка было: " + OperatorModel.Poteriashki);

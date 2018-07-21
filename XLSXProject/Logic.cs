@@ -110,8 +110,6 @@ namespace XLSXProject
             try
             {
                 motivashion = excelOut.Workbook.Worksheets.Add("Мотивация");
-                //
-                //worksheet.Cells[FromRow, FromColumn, ToRow, ToColumn].Merge = true;
                 motivashion.Cells[1, 1, 1, 3].Merge = true;
                 motivashion.Cells[1, 1, 7, 7].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 motivashion.Cells[1, 1, 1, 3].Style.Font.Color.SetColor(Color.DarkRed);
@@ -160,8 +158,6 @@ namespace XLSXProject
 
         private void PrintFirstPathMonth(string sheetName)
         {
-          
-
             GreateNewSheet(sheetName);
             GreateMotivationSheet();
             var row = 2;
