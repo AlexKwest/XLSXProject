@@ -10,7 +10,8 @@ namespace XLSXProject
         {
             FirsMonth,
             TwoMonth,
-            Motivation
+            Motivation,
+            AllMonth
         }
     }
 }

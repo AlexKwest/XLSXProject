@@ -22,7 +22,9 @@ namespace XLSXProject
         ExcelWorksheet newSheet;
         List<OperatorModel> operatorModels;
 
-       
+        IEnumerable<OperatorModel> result;
+
+
         public Logic(string FilePathIn, string FilePathOut)
         {
             excelIn = new ExcelPackage(new FileInfo(FilePathIn));
@@ -32,12 +34,12 @@ namespace XLSXProject
 
         public List<OperatorModel> SetOperatorList()
         {
-            GetListSheet(0);
-            GetListSheet(1);
+            GetListSheet(0, 62);
+            GetListSheet(1, 130);
             return operatorModels;
         }
 
-        private void GetListSheet(int numberSheet)
+        private void GetListSheet(int numberSheet, int proideno)
         {
             worksheet = excelIn.Workbook.Worksheets[numberSheet];
 
@@ -45,41 +47,48 @@ namespace XLSXProject
             {
                 if (GetValueOperator(row))
                 {
-                    if (GetValueDay(row))
+                    // if (GetValueDay(row, proideno))
                         operatorModels.Add(SetOperator(row));
                 }
                 else break;
             }
         }
 
-        private OperatorModel SetOperator(int row)
+        private bool GetValueDay(int row, int proideno)
         {
-                var result = new OperatorModel();
-                result.Name = worksheet.Cells[row, 1].Value.ToString();
-                result.Days15 = Convert.ToInt32(worksheet.Cells[row, 62].Value);
-                result.Proideno15 = Convert.ToInt32(worksheet.Cells[row, 64].Value);
-            /* TODO: На время отладки    
-                Console.WriteLine("Введите Оклад сотрудника:" + result.Name);
-                result.Oklad = Convert.ToInt32(Console.ReadLine()); 
-            */
-            result.Oklad = 6250;
-                return result;
-        }
-        private bool GetValueDay(int row)
-        {
-            try
-            {
-                if (worksheet.Cells[row, 1].Value.ToString() == "потеряшки")
-                    return true;
-            }
-            catch { }
-            return Convert.ToInt32(worksheet.Cells[row, 62].Value) != 0 ? true : false;
+            //try
+            //{
+            //    if (worksheet.Cells[row, 1].Value.ToString() == Program.poteriashka)
+            //        return true;
+            //}
+            //catch { }
+            return Convert.ToInt32(worksheet.Cells[row, proideno].Value) != 0 ? true : false;
         }
 
         private bool GetValueOperator(int row)
         {
             return worksheet.Cells[row, 1].Value != null ? true : false;
         }
+
+
+        private OperatorModel SetOperator(int row)
+        {
+            var result = new OperatorModel();
+            result.Name = worksheet.Cells[row, 1].Value.ToString();
+            result.Days15 = Convert.ToInt32(worksheet.Cells[row, 62].Value);
+            result.Proideno15 = Convert.ToInt32(worksheet.Cells[row, 64].Value);
+        /* TODO: На время отладки    
+            Console.WriteLine("Введите Оклад сотрудника:" + result.Name);
+            result.Oklad = Convert.ToInt32(Console.ReadLine()); 
+        */
+            result.Oklad = 6250;
+
+            result.Days31 = Convert.ToInt32(worksheet.Cells[row, 130].Value);
+            result.Proideno31 = Convert.ToInt32(worksheet.Cells[row, 132].Value);
+            return result;
+        }
+
+      
 
         //TODO: Респечатать результат с 1-15 число
         public void PrintResult(string sheetName, EnumResult.PrintFile typePrint)
@@ -101,7 +110,9 @@ namespace XLSXProject
             }
             catch
             {
-                newSheet = excelOut.Workbook.Worksheets[sheetName];
+                excelOut.Workbook.Worksheets.Delete(sheetName);
+                GreateNewSheet(sheetName);
+               // newSheet = excelOut.Workbook.Worksheets[sheetName];
             }
         }
 
@@ -110,15 +121,15 @@ namespace XLSXProject
             try
             {
                 motivashion = excelOut.Workbook.Worksheets.Add("Мотивация");
+                motivashion.Cells[1, 1, 7, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                 motivashion.Cells[1, 1, 1, 3].Merge = true;
-                motivashion.Cells[1, 1, 7, 7].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 motivashion.Cells[1, 1, 1, 3].Style.Font.Color.SetColor(Color.DarkRed);
                 motivashion.Cells[1, 1, 7, 3].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
                 motivashion.SetValue(1, 1, 6250);
                 motivashion.Cells[2, 1, 2, 3].Merge = true;
                 motivashion.SetValue(2, 1, "С 1-15 оклад");
                 motivashion.SetValue(3, 1, "от"); motivashion.SetValue(3, 2, "до"); motivashion.SetValue(3, 3, "сумма");
-
                 motivashion.SetValue(4, 1, 1); motivashion.SetValue(4, 2, 4); motivashion.SetValue(4, 3, 200);
                 motivashion.SetValue(5, 1, 5); motivashion.SetValue(5, 2, 9); motivashion.SetValue(5, 3, 400);
                 motivashion.SetValue(6, 1, 10); motivashion.SetValue(6, 2, 14); motivashion.SetValue(6, 3, 600);
@@ -131,9 +142,17 @@ namespace XLSXProject
                 motivashion.Cells[2, 5, 2, 7].Merge = true;
                 motivashion.SetValue(2, 5, "С 1-15 оклад");
                 motivashion.SetValue(3, 5, "от"); motivashion.SetValue(3, 6, "до"); motivashion.SetValue(3, 7, "сумма");
-
                 motivashion.SetValue(4, 5, 1); motivashion.SetValue(4, 6, 4); motivashion.SetValue(4, 7, 50);
                 motivashion.SetValue(5, 5, 11); motivashion.SetValue(5, 7, 100);
+
+                motivashion.Cells[1, 9, 2, 11].Merge = true;
+                motivashion.Cells[1, 9, 2, 11].Style.Font.Color.SetColor(Color.DarkRed);
+                motivashion.Cells[1, 9, 7, 11].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
+                motivashion.SetValue(1, 9, "Премия");
+                motivashion.SetValue(3, 9, "от"); motivashion.SetValue(3, 10, "до"); motivashion.SetValue(3, 11, "сумма");
+                motivashion.SetValue(4, 9, 30); motivashion.SetValue(4, 10, 34); motivashion.SetValue(4, 11, 3000);
+                motivashion.SetValue(5, 9, 35);                                  motivashion.SetValue(5, 11, 5000);
+
             }
             catch
             {
@@ -141,20 +160,116 @@ namespace XLSXProject
             }
         }
 
+        public int GetPointPoteriashka(EnumResult.PrintFile type)
+        {
+            switch (type)
+            {
+                case EnumResult.PrintFile.FirsMonth:
+                    return (from t in operatorModels
+                            where t.Name == Program.poteriashka
+                            select t.Proideno15).Sum();
+                case EnumResult.PrintFile.TwoMonth:
+                    return (from t in operatorModels
+                            where t.Name == Program.poteriashka
+                            select t.Proideno31).Sum();
+            }
+            return (from t in operatorModels
+                    where t.Name == Program.poteriashka
+                    select t.ProidenoAll).Sum();
+        }
+
         private void PrintTwoPathMonth(string sheetName)
         {
+            //День 
+            //Пройдено 16-31	
+            //Пройдено 1-31	
+            //Оклад 
+            //Оклад с 16-31	
+            //Бонус 
+            //Бонусы 16-31	
+            //БОНУСЫ с 1-31	
+            //Бонусы предыдущего периода 
+            //Доплата предыдущего периода 
+            //Бонусы к выплате 
+            //Премия  
+            //Сумма к выплате
+
+            GreateNewSheet(sheetName);
             GreateMotivationSheet();
+            var row = 2;
+            var col = 1;
+            #region HeadSheet
+            newSheet.SetValue(1, 1, "Оператор");
+            newSheet.SetValue(1, 2, "День");
+            newSheet.SetValue(1, 3, "Пройдено 16-31");
+            newSheet.SetValue(1, 4, "Пройдено 1-31");
+            newSheet.SetValue(1, 5, "Оклад");
+            newSheet.SetValue(1, 6, "Оклад с 16-31");
+            newSheet.SetValue(1, 7, "Бонус");
+            newSheet.SetValue(1, 8, "Бонусы 16-31");
+            newSheet.SetValue(1, 9, "БОНУСЫ с 1-31");
+            newSheet.SetValue(1, 10, "Бонусы предыдущего периода");
+            newSheet.SetValue(1, 11, "Доплата предыдущего периода");
+            newSheet.SetValue(1, 12, "Бонусы к выплате");
+            newSheet.SetValue(1, 13, "Премия");
+            newSheet.SetValue(1, 14, "Сумма к выплате");
+            #endregion
+            result = QueryTable(EnumResult.PrintFile.TwoMonth);
+
+            foreach (var cell in result)
+            {
+                if (cell.Name != Program.poteriashka)
+                {
+                    newSheet.SetValue(row, col++, cell.Name);
+                    newSheet.SetValue(row, col++, cell.Days31);
+                    newSheet.SetValue(row, col++, cell.Proideno31);
+                    newSheet.SetValue(row, col++, cell.ProidenoAll);
+                    newSheet.SetValue(row, col++, cell.Oklad);
+                    newSheet.Cells[row, col++].Formula = "=(" + newSheet.Cells[row, 5].Address + "/" + 25 + ")*" + newSheet.Cells[row, 2].Address;
+
+                    newSheet.Cells[row, col++].Formula = "IF(" + newSheet.Cells[row, 5].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 1].Address
+                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + ">=" + motivashion.Name + "!" + motivashion.Cells[4, 1].Address + "," + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[4, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[4, 3].Address
+                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[5, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 3].Address
+                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[6, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[6, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[6, 3].Address
+                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[7, 1].Address + ")," + motivashion.Name + "!" + motivashion.Cells[7, 3].Address + ",0" + ")))),"
+                                                       + "IF(" + newSheet.Cells[row, 5].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 5].Address
+                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 5].Address + ", " + newSheet.Cells[row, 3].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 6].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 7].Address
+                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 5].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 7].Address + ",0" + ")),0))";
+
+                    newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 3].Address + "*" + newSheet.Cells[row, 7].Address;
+                    newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 4].Address + "*" + newSheet.Cells[row, 7].Address;
+                    newSheet.SetValue(row, col++, cell.BonusDyas15);
+                    newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 9].Address + "-" + newSheet.Cells[row, 10].Address + "-" + newSheet.Cells[row, 8].Address;
+                    newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 8].Address + "+" + newSheet.Cells[row, 11].Address;
+                    //=ЕСЛИ(И(D2>=Мотивация!$J$6;D2<=Мотивация!$K$6);Мотивация!$L$6;ЕСЛИ(И(D2>=Мотивация!$J$7);Мотивация!$L$7;"0"))
+                    newSheet.Cells[row, col++].Formula = "IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 9].Address + ", " + newSheet.Cells[row, 4].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 10].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 11].Address
+                                                                                              + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 9].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 11].Address + ",0))";
+
+                    newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 6].Address + "+" + newSheet.Cells[row, 12].Address + "+" + newSheet.Cells[row, 13].Address;
+                    col = 1;
+                    row++;
+                }
+            }
+
+            newSheet.SetValue(row + 3, 1, "Распределите очки Потеряшки: " + GetPointPoteriashka(EnumResult.PrintFile.TwoMonth));
+            StyleTable("A1:N", 14);
         }
 
-        public int GetPointPoteriashka()
+        private IEnumerable<OperatorModel> QueryTable(EnumResult.PrintFile type)
         {
-            return OperatorModel.Poteriashki;
-            //return    (from t in operatorModels
-            //                where t.Name == "потеряшки"
-            //                select t.Proideno15).Sum();
+            switch (type)
+            {
+                case EnumResult.PrintFile.FirsMonth:
+                    return 
+                           from t in operatorModels
+                           where t.Name != Program.poteriashka && t.Days15 > 0
+                           select t;
+            }
+                return 
+                        from t in operatorModels
+                        where t.Name != Program.poteriashka && t.Days31 > 0
+                        select t;
         }
-
-        
 
         private void PrintFirstPathMonth(string sheetName)
         {
@@ -162,7 +277,7 @@ namespace XLSXProject
             GreateMotivationSheet();
             var row = 2;
             var col = 1;
-            //newSheet.Column(1).Width = 30;
+            #region HeadSheet
             newSheet.SetValue(1, 1, "Оператор");
             newSheet.SetValue(1, 2, "День");
             newSheet.SetValue(1, 3, "Пройдено");
@@ -171,10 +286,12 @@ namespace XLSXProject
             newSheet.SetValue(1, 6, "Оклад к выплате");
             newSheet.SetValue(1, 7, "Бонусы 1 - 15");
             newSheet.SetValue(1, 8, "Сумма");
+            #endregion
 
-            foreach (var cell in operatorModels)
+            result = QueryTable(EnumResult.PrintFile.FirsMonth);
+            foreach (var cell in result)
             {
-                if (cell.Name != "потеряшки")
+                if (cell.Name != Program.poteriashka)
                 {
                     newSheet.SetValue(row, col++, cell.Name);
                     newSheet.SetValue(row, col++, cell.Days15);
@@ -203,23 +320,22 @@ namespace XLSXProject
                     row++;
                 }
             }
-            newSheet.SetValue(row + 3, 1, "Распределите очки Потеряшки: " + GetPointPoteriashka());
-            StyleTable();
+            newSheet.SetValue(row + 3, 1, "Распределите очки Потеряшки: " + GetPointPoteriashka(EnumResult.PrintFile.FirsMonth));
+            StyleTable("A1:H", 8);
         }
 
-        private void StyleTable()
-        {
-            newSheet.Column(1).AutoFit(10);
-            newSheet.Column(2).AutoFit(10);
-            newSheet.Column(3).AutoFit(10);
-            newSheet.Column(4).AutoFit(10);
-            newSheet.Column(5).AutoFit(10);
-            newSheet.Column(6).AutoFit(10);
-            newSheet.Column(7).AutoFit(10);
-            newSheet.Column(8).AutoFit(10);
 
-            var modelRows = operatorModels.Count(x => x.Name != "потеряшки")+ 1;
-            string modelRange = "A1:H" + modelRows.ToString();
+        private void StyleTable(string startHead, int col)
+        {
+            for (int i = 1; i <= col; i++)
+            {
+                newSheet.Column(i).AutoFit(10);
+            }
+
+            //var modelRows = operatorModels.Count(x => x.Name != Program.poteriashka)+ 1;
+
+            var modelRows = result.Count() + 1;
+            string modelRange = startHead + modelRows.ToString();
             var modelTable = newSheet.Cells[modelRange];
 
             // Assign borders
@@ -229,7 +345,7 @@ namespace XLSXProject
             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
             //Style Head table
-            modelTable = newSheet.Cells["A1:H1"];
+            modelTable = newSheet.Cells[startHead + "1"];
             modelTable.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             modelTable.Style.Font.Color.SetColor(Color.DarkGreen);
             modelTable.Style.Border.Top.Style = ExcelBorderStyle.Medium;

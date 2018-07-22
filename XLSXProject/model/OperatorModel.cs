@@ -6,29 +6,29 @@ namespace XLSXProject.model
 {
     public class OperatorModel : IEqualityComparer<OperatorModel>
     {
-        private int proideno15;
-        private int proideno31;
+       // private int proideno15;
+       // private int proideno31;
         private int premia;
 
-        public static int Poteriashki = 0 ;
+        //public static int Poteriashki = 0 ;
         public string Name { get; set; }
         public int Days15 { get; set; } // BJ18
-        public int Proideno15  //BL18
-        {
-            get
-            {
-                return proideno15;
-            }
-            set
-            {
-                if ( Name == "потеряшки")
-                {
-                   // proideno15 = Convert.ToInt32(value);
-                    OperatorModel.Poteriashki += value;
-                }
-                proideno15 = value;
-            }
-        }
+        public int Proideno15 { get; set; }  //BL18
+        //{
+        //    get
+        //    {
+        //        return proideno15;
+        //    }
+        //    set
+        //    {
+        //        if ( Name == "потеряшки")
+        //        {
+        //           // proideno15 = Convert.ToInt32(value);
+        //            OperatorModel.Poteriashki += value;
+        //        }
+        //        proideno15 = value;
+        //    }
+        //}
         public int Oklad { get; set; } //10 000 6250
         public int Bonus15
         {
@@ -84,27 +84,27 @@ namespace XLSXProject.model
 
         //  Name                                                                                                    Имя
         public int Days31 { get; set; } //DZ3   //=BN3+BR3+BV3+BZ3+CD3+CH3+CL3+CP3+CT3+CX3+DB3+DF3+DJ3+DN3+DR3+DV3  День
-        public int Proideno31  
-        {
-            get
-            {
-                return proideno31;
-            }
-            set
-            {
-                if (Name == "потеряшки")
-                {
-                    // proideno15 = Convert.ToInt32(value);
-                    OperatorModel.Poteriashki += value;
-                }
-                proideno31 = value;
-            }
-        }      //EB3   //=BP3+BT3+BX3+CB3+CF3+CJ3+CN3+CR3+CZ3+DD3+DH3+DL3+DP3+DT3+DX3+CV3  Проидено 16-31
+        public int Proideno31 { get; set; }
+        //{
+        //    get
+        //    {
+        //        return proideno31;
+        //    }
+        //    set
+        //    {
+        //        if (Name == "потеряшки")
+        //        {
+        //            // proideno15 = Convert.ToInt32(value);
+        //            OperatorModel.Poteriashki += value;
+        //        }
+        //        proideno31 = value;
+        //    }
+        //}      //EB3   //=BP3+BT3+BX3+CB3+CF3+CJ3+CN3+CR3+CZ3+DD3+DH3+DL3+DP3+DT3+DX3+CV3  Проидено 16-31
         public int ProidenoAll
         {
             get
             {
-                return proideno15 + proideno31;
+                return Proideno15 + Proideno31;
             }
         }       //EF3   //=BL3+EB3                                                          Пройдено 1-31
         //  Oklad                                                                                                   Оклад

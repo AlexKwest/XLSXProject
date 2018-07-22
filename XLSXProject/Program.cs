@@ -11,7 +11,7 @@ namespace XLSXProject
     {
         static string demoPathIn = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName,"data","Operators.xlsx");
         static string demoPathOut = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName, "data", "Result.xlsx");
-
+        public const string poteriashka = "потеряшки";
         static void Main(string[] args)
         {
             Console.SetWindowSize(160, Console.WindowHeight * 2);
@@ -29,7 +29,7 @@ namespace XLSXProject
            
             Console.WriteLine("Press any key...");
 
-            Console.WriteLine("У потерянка было: " + OperatorModel.Poteriashki);
+            Console.WriteLine("У потеряшки было: " + logic.GetPointPoteriashka(EnumResult.PrintFile.FirsMonth));
 
             Console.ReadKey();
 
