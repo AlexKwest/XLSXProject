@@ -5,16 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XLSXWPFForm"
         mc:Ignorable="d"
-        Title="Ввод Оклада Сотрудника" Height="81.452" Width="500.034" Closing="Window_Closing" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid Height="142" VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="41*"/>
-            <ColumnDefinition Width="13*"/>
-            <ColumnDefinition Width="125*"/>
-            <ColumnDefinition Width="53*"/>
-        </Grid.ColumnDefinitions>
-        <Label x:Name="lblName" Margin="5,0,108,106" Grid.ColumnSpan="3" Content="ФИО:" Background="{x:Null}" FontSize="14" Height="26" VerticalAlignment="Bottom"/>
-        <ComboBox x:Name="cmbOklad" Text="6250" Grid.Column="2" Margin="0,0,20,106" SelectedIndex="-1" SelectionChanged="cmbOklad_SelectionChanged" Grid.ColumnSpan="2" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="173">
+        Title="Ввод Оклада Сотрудника" Height="81.452" Width="424.384" Closing="Window_Closing" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid  Margin="0,0,0,0">
+
+        <Label x:Name="lblName" Margin="10,14,138,14" Content="ФИО:" Background="{x:Null}" FontSize="14"/>
+        <ComboBox x:Name="cmbOklad" Text="6250" Margin="0,14,10,14" SelectedIndex="-1" SelectionChanged="cmbOklad_SelectionChanged" HorizontalAlignment="Right" Width="95">
             <ComboBoxItem>6250</ComboBoxItem>
             <ComboBoxItem>10000</ComboBoxItem>
         </ComboBox>
