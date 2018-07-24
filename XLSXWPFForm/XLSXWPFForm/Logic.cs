@@ -1,17 +1,19 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using XLSXProject.model;
-using OfficeOpenXml.FormulaParsing;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using XLSXWPFForm.model;
 
-namespace XLSXProject
+namespace XLSXWPFForm
 {
-
     public class Logic
     {
         ExcelPackage excelIn;
@@ -24,18 +26,21 @@ namespace XLSXProject
 
         IEnumerable<OperatorModel> result;
 
+        public EnumResult.InputOklad inputOklad;
 
-        public Logic(string FilePathIn, string FilePathOut)
+        public Logic(string FilePathIn)
         {
             excelIn = new ExcelPackage(new FileInfo(FilePathIn));
-            excelOut = new ExcelPackage(new FileInfo(FilePathOut));
+            excelOut = new ExcelPackage();
             operatorModels = new List<OperatorModel>();
         }
 
-        public List<OperatorModel> SetOperatorList()
+      
+        public List<OperatorModel> SetOperatorList(EnumResult.InputOklad inputOklad)
         {
-            GetListSheet(0, 62);
-            GetListSheet(1, 130);
+            this.inputOklad = inputOklad;
+            GetListSheet(1, 62);
+            GetListSheet(2, 130);
             return operatorModels;
         }
 
@@ -47,7 +52,7 @@ namespace XLSXProject
             {
                 if (GetValueOperator(row))
                 {
-                     operatorModels.Add(SetOperator(row));
+                    operatorModels.Add(SetOperator(row));
                 }
                 else break;
             }
@@ -63,36 +68,39 @@ namespace XLSXProject
             return worksheet.Cells[row, 1].Value != null ? true : false;
         }
 
-
         private OperatorModel SetOperator(int row)
         {
             var result = new OperatorModel();
             result.Name = worksheet.Cells[row, 1].Value.ToString();
             result.Days15 = Convert.ToInt32(worksheet.Cells[row, 62].Value);
             result.Proideno15 = Convert.ToInt32(worksheet.Cells[row, 64].Value);
-        /* TODO: На время отладки    
-            Console.WriteLine("Введите Оклад сотрудника:" + result.Name);
-            result.Oklad = Convert.ToInt32(Console.ReadLine()); 
-        */
-            result.Oklad = 6250;
+
+            if (inputOklad == EnumResult.InputOklad.Input)
+            {
+                var dialog = new InputBoxes(result.Name, this);
+                dialog.ShowDialog();
+                result.Oklad = Convert.ToInt32(dialog.OklasResult);
+            }
+            else if (inputOklad == EnumResult.InputOklad.Default)
+            {
+                // TODO: На время отладки    
+                result.Oklad = 6250;
+            }
 
             result.Days31 = Convert.ToInt32(worksheet.Cells[row, 130].Value);
             result.Proideno31 = Convert.ToInt32(worksheet.Cells[row, 132].Value);
             return result;
         }
 
-      
-
-        //TODO: Респечатать результат с 1-15 число
-        public void PrintResult(string sheetName, EnumResult.PrintFile typePrint)
+        public void PrintResult(string sheetName, EnumResult.PrintFile typePrint, string demoFileOut)
         {
             switch (typePrint)
             {
-                case EnumResult.PrintFile.FirsMonth:  PrintFirstPathMonth(sheetName); break;
-                case EnumResult.PrintFile.TwoMonth:   PrintTwoPathMonth(sheetName); break;
+                case EnumResult.PrintFile.FirsMonth: PrintFirstPathMonth(sheetName); break;
+                case EnumResult.PrintFile.TwoMonth: PrintTwoPathMonth(sheetName); break;
             }
 
-            excelOut.Save();
+            excelOut.SaveAs(new FileInfo(demoFileOut));
         }
 
         private void GreateNewSheet(string sheetName)
@@ -105,6 +113,7 @@ namespace XLSXProject
             {
                 excelOut.Workbook.Worksheets.Delete(sheetName);
                 GreateNewSheet(sheetName);
+                // newSheet = excelOut.Workbook.Worksheets[sheetName];
             }
         }
 
@@ -113,7 +122,7 @@ namespace XLSXProject
             try
             {
                 motivashion = excelOut.Workbook.Worksheets.Add("Мотивация");
-                motivashion.Cells[1, 1, 7, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                motivashion.Cells[1, 1, 30, 20].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
                 motivashion.Cells[1, 1, 1, 3].Merge = true;
                 motivashion.Cells[1, 1, 1, 3].Style.Font.Color.SetColor(Color.DarkRed);
@@ -127,9 +136,23 @@ namespace XLSXProject
                 motivashion.SetValue(6, 1, 10); motivashion.SetValue(6, 2, 14); motivashion.SetValue(6, 3, 600);
                 motivashion.SetValue(7, 1, 15); motivashion.SetValue(7, 3, 1000);
 
+                motivashion.Cells[10, 1, 10, 3].Merge = true;
+                motivashion.Cells[10, 1, 10, 3].Style.Font.Color.SetColor(Color.DarkRed);
+                motivashion.Cells[10, 1, 17, 3].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
+                motivashion.SetValue(10, 1, 6250);
+                motivashion.Cells[11, 1, 11, 3].Merge = true;
+                motivashion.SetValue(11, 1, "С 16-31 оклад");
+                motivashion.SetValue(12, 1, "от"); motivashion.SetValue(12, 2, "до"); motivashion.SetValue(12, 3, "сумма");
+                motivashion.SetValue(13, 1, 1); motivashion.SetValue(13, 2, 4); motivashion.SetValue(13, 3, 200);
+                motivashion.SetValue(14, 1, 5); motivashion.SetValue(14, 2, 9); motivashion.SetValue(14, 3, 400);
+                motivashion.SetValue(15, 1, 10); motivashion.SetValue(15, 2, 14); motivashion.SetValue(15, 3, 600);
+                motivashion.SetValue(16, 1, 15); motivashion.SetValue(16, 2, 19); motivashion.SetValue(16, 3, 800);
+                motivashion.SetValue(17, 1, 20); motivashion.SetValue(17, 3, 1000);
+
+
                 motivashion.Cells[1, 5, 1, 7].Merge = true;
                 motivashion.Cells[1, 5, 1, 7].Style.Font.Color.SetColor(Color.DarkRed);
-                motivashion.Cells[1, 5, 7, 7].Style.Border.BorderAround(ExcelBorderStyle.DashDot,Color.DarkBlue);
+                motivashion.Cells[1, 5, 7, 7].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
                 motivashion.SetValue(1, 5, 10000);
                 motivashion.Cells[2, 5, 2, 7].Merge = true;
                 motivashion.SetValue(2, 5, "С 1-15 оклад");
@@ -143,7 +166,7 @@ namespace XLSXProject
                 motivashion.SetValue(1, 9, "Премия");
                 motivashion.SetValue(3, 9, "от"); motivashion.SetValue(3, 10, "до"); motivashion.SetValue(3, 11, "сумма");
                 motivashion.SetValue(4, 9, 30); motivashion.SetValue(4, 10, 34); motivashion.SetValue(4, 11, 3000);
-                motivashion.SetValue(5, 9, 35);                                  motivashion.SetValue(5, 11, 5000);
+                motivashion.SetValue(5, 9, 35); motivashion.SetValue(5, 11, 5000);
 
             }
             catch
@@ -158,15 +181,15 @@ namespace XLSXProject
             {
                 case EnumResult.PrintFile.FirsMonth:
                     return (from t in operatorModels
-                            where t.Name == Program.poteriashka
+                            where t.Name == MainWindow.poteriashka
                             select t.Proideno15).Sum();
                 case EnumResult.PrintFile.TwoMonth:
                     return (from t in operatorModels
-                            where t.Name == Program.poteriashka
+                            where t.Name == MainWindow.poteriashka
                             select t.Proideno31).Sum();
             }
             return (from t in operatorModels
-                    where t.Name == Program.poteriashka
+                    where t.Name == MainWindow.poteriashka
                     select t.ProidenoAll).Sum();
         }
 
@@ -190,7 +213,7 @@ namespace XLSXProject
             GreateMotivationSheet();
             var row = 2;
             var col = 1;
-            #region HeadSheet
+#region HeadSheet
             newSheet.SetValue(1, 1, "Оператор");
             newSheet.SetValue(1, 2, "День");
             newSheet.SetValue(1, 3, "Пройдено 16-31");
@@ -205,12 +228,12 @@ namespace XLSXProject
             newSheet.SetValue(1, 12, "Бонусы к выплате");
             newSheet.SetValue(1, 13, "Премия");
             newSheet.SetValue(1, 14, "Сумма к выплате");
-            #endregion
+#endregion
             result = QueryTable(EnumResult.PrintFile.TwoMonth);
 
             foreach (var cell in result)
             {
-                if (cell.Name != Program.poteriashka)
+                if (cell.Name != MainWindow.poteriashka)
                 {
                     newSheet.SetValue(row, col++, cell.Name);
                     newSheet.SetValue(row, col++, cell.Days31);
@@ -218,24 +241,24 @@ namespace XLSXProject
                     newSheet.SetValue(row, col++, cell.ProidenoAll);
                     newSheet.SetValue(row, col++, cell.Oklad);
                     newSheet.Cells[row, col++].Formula = "=(" + newSheet.Cells[row, 5].Address + "/" + 25 + ")*" + newSheet.Cells[row, 2].Address;
-
-                    newSheet.Cells[row, col++].Formula = "IF(" + newSheet.Cells[row, 5].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 1].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + ">=" + motivashion.Name + "!" + motivashion.Cells[4, 1].Address + "," + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[4, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[4, 3].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[5, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 3].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[6, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[6, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[6, 3].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[7, 1].Address + ")," + motivashion.Name + "!" + motivashion.Cells[7, 3].Address + ",0" + ")))),"
-                                                       + "IF(" + newSheet.Cells[row, 5].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 5].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 5].Address + ", " + newSheet.Cells[row, 3].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 6].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 7].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 5].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 7].Address + ",0" + ")),0))";
-
+                    newSheet.Cells[row, col++].Formula =
+                                                    "IF(" + newSheet.Cells[row, 5].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 1].Address
+                                                        + ", IF(AND(" + newSheet.Cells[row, 4].Address + ">=" + motivashion.Name + "!" + motivashion.Cells[13, 1].Address + "," + newSheet.Cells[row, 4].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[13, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[13, 3].Address
+                                                        + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[14, 1].Address + ", " + newSheet.Cells[row, 4].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[14, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[14, 3].Address
+                                                        + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[15, 1].Address + ", " + newSheet.Cells[row, 4].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[15, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[15, 3].Address
+                                                        + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[16, 1].Address + ", " + newSheet.Cells[row, 4].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[16, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[16, 3].Address
+                                                        + ", IF(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[17, 1].Address + "," + motivashion.Name + "!" + motivashion.Cells[17, 3].Address + ",0" + ")))))"
+                                                + ", IF(" + newSheet.Cells[row, 5].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 5].Address
+                                                        + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 5].Address + ", " + newSheet.Cells[row, 4].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 6].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 7].Address
+                                                        + ", IF(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 5].Address + "," + motivashion.Name + "!" + motivashion.Cells[5, 7].Address + ",0" + ")),0))";
                     newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 3].Address + "*" + newSheet.Cells[row, 7].Address;
                     newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 4].Address + "*" + newSheet.Cells[row, 7].Address;
                     newSheet.SetValue(row, col++, cell.BonusDyas15);
                     newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 9].Address + "-" + newSheet.Cells[row, 10].Address + "-" + newSheet.Cells[row, 8].Address;
                     newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 8].Address + "+" + newSheet.Cells[row, 11].Address;
-                    //=ЕСЛИ(И(D2>=Мотивация!$J$6;D2<=Мотивация!$K$6);Мотивация!$L$6;ЕСЛИ(И(D2>=Мотивация!$J$7);Мотивация!$L$7;"0"))
-                    newSheet.Cells[row, col++].Formula = "IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 9].Address + ", " + newSheet.Cells[row, 4].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 10].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 11].Address
-                                                                                              + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 9].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 11].Address + ",0))";
+                    newSheet.Cells[row, col++].Formula = 
+                                                         "IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 9].Address + ", " + newSheet.Cells[row, 4].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 10].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 11].Address
+                                                     + ", IF(AND(" + newSheet.Cells[row, 4].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 9].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 11].Address + ",0))";
 
                     newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 6].Address + "+" + newSheet.Cells[row, 12].Address + "+" + newSheet.Cells[row, 13].Address;
                     col = 1;
@@ -252,15 +275,15 @@ namespace XLSXProject
             switch (type)
             {
                 case EnumResult.PrintFile.FirsMonth:
-                    return 
-                           from t in operatorModels
-                           where t.Name != Program.poteriashka && t.Days15 > 0
-                           select t;
+                    return
+                            from t in operatorModels
+                            where t.Name != MainWindow.poteriashka && t.Days15 > 0
+                            select t;
             }
-                return 
-                        from t in operatorModels
-                        where t.Name != Program.poteriashka && t.Days31 > 0
-                        select t;
+            return
+                    from t in operatorModels
+                    where t.Name != MainWindow.poteriashka && t.Days31 > 0
+                    select t;
         }
 
         private void PrintFirstPathMonth(string sheetName)
@@ -269,7 +292,7 @@ namespace XLSXProject
             GreateMotivationSheet();
             var row = 2;
             var col = 1;
-            #region HeadSheet
+#region HeadSheet
             newSheet.SetValue(1, 1, "Оператор");
             newSheet.SetValue(1, 2, "День");
             newSheet.SetValue(1, 3, "Пройдено");
@@ -278,12 +301,12 @@ namespace XLSXProject
             newSheet.SetValue(1, 6, "Оклад к выплате");
             newSheet.SetValue(1, 7, "Бонусы 1 - 15");
             newSheet.SetValue(1, 8, "Сумма");
-            #endregion
+#endregion
 
             result = QueryTable(EnumResult.PrintFile.FirsMonth);
             foreach (var cell in result)
             {
-                if (cell.Name != Program.poteriashka)
+                if (cell.Name != MainWindow.poteriashka)
                 {
                     newSheet.SetValue(row, col++, cell.Name);
                     newSheet.SetValue(row, col++, cell.Days15);
@@ -291,13 +314,13 @@ namespace XLSXProject
                     newSheet.SetValue(row, col++, cell.Oklad);
 
                     newSheet.Cells[row, col++].Formula = "IF(" + newSheet.Cells[row, 4].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 1].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + ">=" + motivashion.Name + "!" + motivashion.Cells[4, 1].Address + "," + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[4, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[4, 3].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[5, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 3].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[6, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[6, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[6, 3].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[7, 1].Address + ")," + motivashion.Name + "!" + motivashion.Cells[7, 3].Address + ",0" + ")))),"
-                                                       + "IF(" + newSheet.Cells[row, 4].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 5].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 5].Address + ", " + newSheet.Cells[row, 3].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 6].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 7].Address
-                                                                                                                                                     + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 5].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 7].Address + ",0" + ")),0))";
+                                                                                                                                                        + ", IF(AND(" + newSheet.Cells[row, 3].Address + ">=" + motivashion.Name + "!" + motivashion.Cells[4, 1].Address + "," + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[4, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[4, 3].Address
+                                                                                                                                                        + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[5, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 3].Address
+                                                                                                                                                        + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[6, 1].Address + ", " + newSheet.Cells[row, 3].Address + "<=" + motivashion.Name + "!" + motivashion.Cells[6, 2].Address + ")," + motivashion.Name + "!" + motivashion.Cells[6, 3].Address
+                                                                                                                                                        + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[7, 1].Address + ")," + motivashion.Name + "!" + motivashion.Cells[7, 3].Address + ",0" + ")))),"
+                                                        + "IF(" + newSheet.Cells[row, 4].Address + "=" + motivashion.Name + "!" + motivashion.Cells[1, 5].Address
+                                                                                                                                                        + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[4, 5].Address + ", " + newSheet.Cells[row, 3].Address + " <= " + motivashion.Name + "!" + motivashion.Cells[4, 6].Address + "), " + motivashion.Name + "!" + motivashion.Cells[4, 7].Address
+                                                                                                                                                        + ", IF(AND(" + newSheet.Cells[row, 3].Address + " >= " + motivashion.Name + "!" + motivashion.Cells[5, 5].Address + ")," + motivashion.Name + "!" + motivashion.Cells[5, 7].Address + ",0" + ")),0))";
                     // wr.SetValue(row, col++, cell.Bonus);
 
                     newSheet.Cells[row, col++].Formula = "=(" + newSheet.Cells[row, 4].Address + "/" + 25 + ")*" + newSheet.Cells[row, 2].Address;
@@ -346,6 +369,4 @@ namespace XLSXProject
             modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Medium;
         }
     }
-
 }
-
