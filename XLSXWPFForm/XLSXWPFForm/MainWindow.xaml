@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Зарплата" Height="448.026" Width="741.923" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" >
     <Grid Margin="0,0,2,1">
-        <Button x:Name="submit" Content="Загрузить файл отчёта" Margin="0,0,203,5" Height="51" VerticalAlignment="Bottom" Click="submit_Click" HorizontalAlignment="Right" Width="140"/>
-        <Button x:Name="btnUploadFirstFile" Content="Сохранить отчёт" Margin="0,0,15,5" Height="53" VerticalAlignment="Bottom" Click="btnUploadFirstFile_Click" IsEnabled="False" HorizontalAlignment="Right" Width="170"/>
+        <Button x:Name="submit" Content="Загрузить файл отчёта" Margin="0,0,170,5" Height="51" VerticalAlignment="Bottom" Click="submit_Click" HorizontalAlignment="Right" Width="140"/>
+        <Button x:Name="btnUploadFirstFile" Content="Сохранить отчёт" Margin="0,0,15,5" Height="51" VerticalAlignment="Bottom" Click="btnUploadFirstFile_Click" IsEnabled="False" HorizontalAlignment="Right" Width="140"/>
 
         <DataGrid x:Name="MyDatagrid" AutoGenerateColumns="True" Margin="15,15,15,70"  ItemsSource="{Binding Path=operatorModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  CanUserAddRows="False"/>
 

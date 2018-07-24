@@ -19,19 +19,21 @@ namespace XLSXWPFForm.model
             {
                 if (Oklad <= 6250)
                 {
-                    if (Proideno15 <= 4)
+                    if (Proideno15 >=1 && Proideno15 <= 4)
                         return 200;
-                    if (Proideno15 <= 9)
+                    if (Proideno15 >= 5 && Proideno15 <= 9)
                         return 400;
-                    if (Proideno15 <= 14)
+                    if (Proideno15 >= 10 && Proideno15 <= 14)
                         return 600;
-                    else return 1000;
+                    if (Proideno15 >= 15)
+                        return 1000;
                 }
                 if (Oklad > 6250)
                 {
-                    if (Proideno15 <= 10)
+                    if (Proideno15 >=1 && Proideno15 <= 10)
                         return 50;
-                    else return 100;
+                    if (Proideno15 >=11)
+                        return 100;
                 }
                 return 0;
             }
@@ -87,19 +89,23 @@ namespace XLSXWPFForm.model
             {
                 if (Oklad <= 6250)
                 {
-                    if (ProidenoAll <= 4)
+                    if (ProidenoAll >=1 && ProidenoAll <= 4)
                         return 200;
-                    if (ProidenoAll <= 9)
+                    if (ProidenoAll >= 5 && ProidenoAll <= 9)
                         return 400;
-                    if (ProidenoAll <= 14)
+                    if (ProidenoAll >= 10 && ProidenoAll <= 14)
                         return 600;
-                    else return 1000;
+                    if (ProidenoAll >= 15 && ProidenoAll <= 19)
+                        return 800;
+                    if (ProidenoAll >= 20)
+                        return 1000;
                 }
-                if (Oklad > 6250)
+                else if (Oklad > 6250)
                 {
-                    if (ProidenoAll <= 10)
+                    if (ProidenoAll >=1 && ProidenoAll <= 10)
                         return 50;
-                    else return 100;
+                    if (ProidenoAll >= 11)
+                        return 100;
                 }
                 return 0;
             }

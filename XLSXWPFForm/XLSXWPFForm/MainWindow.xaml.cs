@@ -49,20 +49,19 @@ namespace XLSXWPFForm
             {
                 demoPathIn = openFileDialog.FileName;
                 btnUploadFirstFile.IsEnabled = true;
+            
+                logic = new Logic(demoPathIn);
+                EnumResult.InputOklad result;
+
+                if (MessageBox.Show("Ввести Оклад по умолчанию \n или ввести вручную?", "Выберите", MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    result = EnumResult.InputOklad.Default;
+                else
+                    result = EnumResult.InputOklad.Input;
+
+                operatorModels = logic.SetOperatorList(result);
+                this.MyDatagrid.ItemsSource = operatorModels;
             }
-           
-            logic = new Logic(demoPathIn);
-
-            EnumResult.InputOklad result;
-
-            if (MessageBox.Show("Ввести Оклад по умолчанию \n или ввести вручную?", "Выберите", MessageBoxButton.YesNo,
-                MessageBoxImage.Question) == MessageBoxResult.Yes)
-                result = EnumResult.InputOklad.Default;
-            else
-                result = EnumResult.InputOklad.Input;
-
-            operatorModels = logic.SetOperatorList(result);
-            this.MyDatagrid.ItemsSource = operatorModels;
         }
 
         private void btnUploadFirstFile_Click(object sender, RoutedEventArgs e)
