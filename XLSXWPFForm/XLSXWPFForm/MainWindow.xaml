@@ -6,11 +6,60 @@
         xmlns:local="clr-namespace:XLSXWPFForm"
         mc:Ignorable="d"
         Title="Зарплата" Height="448.026" Width="741.923" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" >
-    <Grid Margin="0,0,2,1">
-        <Button x:Name="submit" Content="Загрузить файл отчёта" Margin="0,0,170,5" Height="51" VerticalAlignment="Bottom" Click="submit_Click" HorizontalAlignment="Right" Width="140"/>
-        <Button x:Name="btnUploadFirstFile" Content="Сохранить отчёт" Margin="0,0,15,5" Height="51" VerticalAlignment="Bottom" Click="btnUploadFirstFile_Click" IsEnabled="False" HorizontalAlignment="Right" Width="140"/>
 
-        <DataGrid x:Name="MyDatagrid" AutoGenerateColumns="True" Margin="15,15,15,70"  ItemsSource="{Binding Path=operatorModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  CanUserAddRows="False"/>
+    <Window.Resources>
+        <ControlTemplate TargetType="Button" x:Key="btTemplate">
+            <Border x:Name="buttonBorder" CornerRadius="25" 
+                    BorderBrush= "Black" 
+                    BorderThickness="0" 
+                    Background="{TemplateBinding Background}" 
+                    Height="{TemplateBinding Height}" 
+                    Width="{TemplateBinding Width}" >
+                <ContentControl Margin="5" 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Content="{TemplateBinding Content}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="buttonBorder" Property="Background" Value="Azure" />
+                    <Setter TargetName="buttonBorder" Property="BorderBrush" Value="DarkBlue" />
+                    <Setter TargetName="buttonBorder" Property="BorderThickness" Value="2" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter TargetName="buttonBorder" Property="Background" Value="LightGray"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Grid  Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="379*"/>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="180"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="submit" Template ="{StaticResource btTemplate}" Click="submit_Click" 
+                Grid.Row="1" Grid.Column="1"
+                Content="Загрузить Отчёт" 
+                Margin="0,0,10,10" Width="156" Height="51" Background="DarkGreen"  HorizontalAlignment="Right"  VerticalAlignment="Bottom"/>
+        <Button x:Name="btnUploadFirstFile" Template ="{StaticResource btTemplate}" Click="btnUploadFirstFile_Click"
+                Grid.Column="2" Grid.Row="1" 
+                Content="Сохранить отчёт" IsEnabled="False"
+                Margin="0,0,10,10" Width="156" Height="51" Background="DarkGreen" VerticalAlignment="Bottom" HorizontalAlignment="Right"  />
+
+        <DataGrid x:Name="MyDatagrid" ItemsSource="{Binding Path=operatorModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                  Grid.ColumnSpan="3" Grid.Row="0"  AutoGenerateColumns="True" Margin="5"   CanUserAddRows="False" />
 
     </Grid>
 </Window>
