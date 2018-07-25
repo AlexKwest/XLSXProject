@@ -8,6 +8,11 @@ namespace XLSXWPFForm.model
 {
     public class OperatorModel
     {
+        public override string ToString()
+        {
+            return Name;
+        }
+
         private int premia;
         public string Name { get; set; }
         public int Days15 { get; set; } 

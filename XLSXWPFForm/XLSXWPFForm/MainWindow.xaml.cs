@@ -60,7 +60,10 @@ namespace XLSXWPFForm
                     result = EnumResult.InputOklad.Input;
 
                 operatorModels = logic.SetOperatorList(result);
-                this.MyDatagrid.ItemsSource = operatorModels;
+                lstNameOperator.ItemsSource = operatorModels;
+
+                //.Select(p=>p).ToList<OperatorModel>();
+                //this.MyDatagrid.ItemsSource = operatorModels;
             }
         }
 
