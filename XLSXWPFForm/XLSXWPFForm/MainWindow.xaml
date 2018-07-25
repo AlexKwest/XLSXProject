@@ -10,9 +10,9 @@
 
     <Window.Resources>
         <Style x:Key="LabelStyle">
-            
+
         </Style>
-        
+
         <Style TargetType="{x:Type Label}">
             <!--x:Key="LabelStyle">-->
             <Setter Property="Control.HorizontalAlignment" Value="Left"></Setter>
@@ -22,7 +22,7 @@
             <Setter Property="BorderBrush"  Value="Black"></Setter>
         </Style>
         <ControlTemplate TargetType="{x:Type Label}" x:Key="lblTemplate">
-           
+
 
 
         </ControlTemplate>
@@ -30,9 +30,10 @@
             <Border x:Name="buttonBorder" CornerRadius="25" 
                     BorderBrush= "Black" 
                     BorderThickness="0" 
-                    Background="{TemplateBinding Background}" 
-                    Height="{TemplateBinding Height}" 
-                    Width="{TemplateBinding Width}" >
+                    Background="{TemplateBinding Background}"
+                    Height="51"
+                    Width="156">
+
                 <ContentControl Margin="5" 
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" 
@@ -123,6 +124,7 @@
             <Label Content="{Binding Name}" Grid.ColumnSpan="3" BorderBrush="Coral" BorderThickness="2" FontSize="25" FontFamily="Times New Roman" Height="38" Margin="10,10,22,0" VerticalAlignment="Top"/>
 
         </Grid>
+        <Button Template="{StaticResource btTemplate}" Background="DarkSlateGray" Content="Сохранить Изменения" Grid.Column="1" HorizontalAlignment="Left" Margin="5" Grid.Row="1" VerticalAlignment="Top" Width="168" Height="56"/>
 
 
         <!--<DataGrid x:Name="MyDatagrid" ItemsSource="{Binding Path=operatorModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
