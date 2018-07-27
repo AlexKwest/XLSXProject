@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,8 @@ namespace XLSXWPFForm
 
         OpenFileDialog openFileDialog;
         Logic logic;
-        List<OperatorModel> operatorModels;
+        public ObservableCollection<OperatorModel> operatorModels;
+        public OperatorModel operatorResult;
 
         public const string poteriashka = "потеряшки";
 
@@ -39,6 +41,12 @@ namespace XLSXWPFForm
         {
             InitializeComponent();
         }
+
+        private void btnExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         private void submit_Click(object sender, RoutedEventArgs e)
         {
             openFileDialog = new OpenFileDialog();
@@ -48,7 +56,7 @@ namespace XLSXWPFForm
             if (openFileDialog.ShowDialog() == true)
             {
                 demoPathIn = openFileDialog.FileName;
-                btnUploadFirstFile.IsEnabled = true;
+                //btnUploadFirstFile.IsEnabled = true;
             
                 logic = new Logic(demoPathIn);
                 EnumResult.InputOklad result;
@@ -59,11 +67,10 @@ namespace XLSXWPFForm
                 else
                     result = EnumResult.InputOklad.Input;
 
-                operatorModels = logic.SetOperatorList(result);
-                lstNameOperator.ItemsSource = operatorModels;
+                operatorModels = new ObservableCollection<OperatorModel>(logic.SetOperatorList(result));
 
-                //.Select(p=>p).ToList<OperatorModel>();
-                //this.MyDatagrid.ItemsSource = operatorModels;
+                   //lstNameOperator.ItemsSource = operatorModels;
+                this.DataContext = operatorModels;
             }
         }
 
@@ -88,6 +95,47 @@ namespace XLSXWPFForm
                     MessageBox.Show(ex.Message);
                 }
             }
+        }
+        private void list_Selected(object sender, RoutedEventArgs e)
+        {
+            //lstViewOperator.Items.Clear();
+            //operatorResult = (OperatorModel)lstNameOperator.SelectedItem;
+            //lstViewOperator.Items.Add(operatorResult);
+        }
+    
+
+    private void OnColumnHeaderClick(object sender, RoutedEventArgs e)
+        {
+            GridViewColumn column = ((GridViewColumnHeader)e.OriginalSource).Column;
+            //piePlotter.PlottedProperty = column.Header.ToString();
+        }
+
+        private void AddNewItem(object sender, RoutedEventArgs e)
+        {
+            OperatorModel asset = new OperatorModel { Name = "ФИО" };
+            operatorModels.Add(asset);
+        }
+
+        private void btnOpenMenu_Click(object sender, RoutedEventArgs e)
+        {
+            btnOpenMenu.Visibility = Visibility.Collapsed;
+            btnCloseMenu.Visibility = Visibility.Visible;
+        }
+
+        private void btnCloseMenu_Click(object sender, RoutedEventArgs e)
+        {
+            btnOpenMenu.Visibility = Visibility.Visible;
+            btnCloseMenu.Visibility = Visibility.Collapsed;
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void ListViewItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

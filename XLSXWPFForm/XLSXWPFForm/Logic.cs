@@ -122,8 +122,9 @@ namespace XLSXWPFForm
             try
             {
                 motivashion = excelOut.Workbook.Worksheets.Add("Мотивация");
-                motivashion.Cells[1, 1, 30, 20].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
+                #region Мотивация 1-15 6250
+                motivashion.Cells[1, 1, 30, 20].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 motivashion.Cells[1, 1, 1, 3].Merge = true;
                 motivashion.Cells[1, 1, 1, 3].Style.Font.Color.SetColor(Color.DarkRed);
                 motivashion.Cells[1, 1, 7, 3].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
@@ -135,7 +136,8 @@ namespace XLSXWPFForm
                 motivashion.SetValue(5, 1, 5); motivashion.SetValue(5, 2, 9); motivashion.SetValue(5, 3, 400);
                 motivashion.SetValue(6, 1, 10); motivashion.SetValue(6, 2, 14); motivashion.SetValue(6, 3, 600);
                 motivashion.SetValue(7, 1, 15); motivashion.SetValue(7, 3, 1000);
-
+                #endregion
+                #region Мотивация 16-31 6250
                 motivashion.Cells[10, 1, 10, 3].Merge = true;
                 motivashion.Cells[10, 1, 10, 3].Style.Font.Color.SetColor(Color.DarkRed);
                 motivashion.Cells[10, 1, 17, 3].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
@@ -148,8 +150,8 @@ namespace XLSXWPFForm
                 motivashion.SetValue(15, 1, 10); motivashion.SetValue(15, 2, 14); motivashion.SetValue(15, 3, 600);
                 motivashion.SetValue(16, 1, 15); motivashion.SetValue(16, 2, 19); motivashion.SetValue(16, 3, 800);
                 motivashion.SetValue(17, 1, 20); motivashion.SetValue(17, 3, 1000);
-
-
+                #endregion
+                #region Мотивация с 1-31 10 000
                 motivashion.Cells[1, 5, 1, 7].Merge = true;
                 motivashion.Cells[1, 5, 1, 7].Style.Font.Color.SetColor(Color.DarkRed);
                 motivashion.Cells[1, 5, 7, 7].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
@@ -159,7 +161,8 @@ namespace XLSXWPFForm
                 motivashion.SetValue(3, 5, "от"); motivashion.SetValue(3, 6, "до"); motivashion.SetValue(3, 7, "сумма");
                 motivashion.SetValue(4, 5, 1); motivashion.SetValue(4, 6, 4); motivashion.SetValue(4, 7, 50);
                 motivashion.SetValue(5, 5, 11); motivashion.SetValue(5, 7, 100);
-
+                #endregion
+                #region Премия
                 motivashion.Cells[1, 9, 2, 11].Merge = true;
                 motivashion.Cells[1, 9, 2, 11].Style.Font.Color.SetColor(Color.DarkRed);
                 motivashion.Cells[1, 9, 7, 11].Style.Border.BorderAround(ExcelBorderStyle.DashDot, Color.DarkBlue);
@@ -167,7 +170,7 @@ namespace XLSXWPFForm
                 motivashion.SetValue(3, 9, "от"); motivashion.SetValue(3, 10, "до"); motivashion.SetValue(3, 11, "сумма");
                 motivashion.SetValue(4, 9, 30); motivashion.SetValue(4, 10, 34); motivashion.SetValue(4, 11, 3000);
                 motivashion.SetValue(5, 9, 35); motivashion.SetValue(5, 11, 5000);
-
+                #endregion
             }
             catch
             {

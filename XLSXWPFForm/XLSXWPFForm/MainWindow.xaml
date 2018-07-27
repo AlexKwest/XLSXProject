@@ -5,27 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XLSXWPFForm"
         xmlns:model="clr-namespace:XLSXWPFForm.model" x:Class="XLSXWPFForm.MainWindow"
-        mc:Ignorable="d"
-        Title="Зарплата" Height="448.026" Width="1025.29" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    mc:Ignorable="d"
+        Title="Зарплата" Height="600
+    " Width="1080
+    " WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" Foreground="White">
 
     <Window.Resources>
-        <Style x:Key="LabelStyle">
+        <Storyboard x:Key="MenuOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="60"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="MenuClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="60"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <!--<Style x:Key="LabelStyle">
 
         </Style>
-
         <Style TargetType="{x:Type Label}">
-            <!--x:Key="LabelStyle">-->
+            --><!--x:Key="LabelStyle">--><!--
             <Setter Property="Control.HorizontalAlignment" Value="Left"></Setter>
             <Setter Property="Control.VerticalAlignment" Value="Center"></Setter>
             <Setter Property="Control.FontFamily" Value="Times new roman"></Setter>
             <Setter Property="Control.Background" Value="AliceBlue"></Setter>
             <Setter Property="BorderBrush"  Value="Black"></Setter>
         </Style>
-        <ControlTemplate TargetType="{x:Type Label}" x:Key="lblTemplate">
-
-
-
-        </ControlTemplate>
         <ControlTemplate TargetType="{x:Type Button}" x:Key="btTemplate">
             <Border x:Name="buttonBorder" CornerRadius="25" 
                     BorderBrush= "Black" 
@@ -53,11 +62,83 @@
                     <Setter TargetName="buttonBorder" Property="Background" Value="LightGray"/>
                 </Trigger>
             </ControlTemplate.Triggers>
-
-        </ControlTemplate>
+        </ControlTemplate>-->
     </Window.Resources>
 
-    <Grid  Margin="0,0,0,0">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="btnOpenMenu">
+            <BeginStoryboard Storyboard="{StaticResource MenuOpen}"/>
+        </EventTrigger>
+
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="btnCloseMenu">
+            <BeginStoryboard Storyboard="{StaticResource MenuClose}"/>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid Background="LightGray">
+        <Grid Height="60" VerticalAlignment="Top" Background="#FF4A90C1" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+            <TextBlock Text="Расчёт Зарплаты" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock Text="Настройки" FontSize="22" VerticalAlignment="Center"/>
+                <materialDesign:PopupBox  Margin="10" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                    <StackPanel Width="150">
+                        <Button Content="Список"/>
+                        <Button Content="Помощь"/>
+                        <Separator/>
+                        <Button x:Name="btnExit" Content="Выход" Click="btnExit_Click" />
+                    </StackPanel>
+                </materialDesign:PopupBox>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#FF002C78">
+            <StackPanel>
+                <Grid Background="#FFFFFF" Height="60">
+                    <Button x:Name="btnCloseMenu" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed" Click="btnCloseMenu_Click">
+                        <materialDesign:PackIcon Foreground="#FF002C78" Kind="ArrowLeft"  Width="25" Height="25"/>
+                    </Button>
+                    <Button x:Name="btnOpenMenu" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Visible" Click="btnOpenMenu_Click">
+                        <materialDesign:PackIcon Foreground="#FF002C78" Kind="Menu" Width="25" Height="25"/>
+                    </Button>
+                </Grid>
+                <Grid Height="100">
+                    
+                </Grid>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
+                    <ListViewItem Height="60" MouseLeftButtonUp="submit_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon  Kind="FolderDownload" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
+                            <TextBlock Text="Загрузить отчёт" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
+                    <ListViewItem Height="60" MouseLeftButtonUp="btnUploadFirstFile_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ContentSave" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
+                            <TextBlock Text="Сохранить зарплату" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
+                    <ListViewItem Height="60" Background="#FF002C78">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Account" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
+                            <TextBlock Text="Операторы" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
+                    <ListViewItem Height="60">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ChartArc" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
+                            <TextBlock Text="Статистика" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+            </StackPanel>
+        </Grid>
+    </Grid>
+    <!--<Grid  Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="16*"/>
             <RowDefinition Height="3*"/>
@@ -71,64 +152,46 @@
         <Button x:Name="submit" Template ="{StaticResource btTemplate}" Click="submit_Click" 
                 Grid.Row="1" Grid.Column="2"
                 Content="Загрузить Отчёт" 
-                Margin="0,0,10,10" Width="156" Height="51" Background="DarkGreen"  HorizontalAlignment="Right"  VerticalAlignment="Bottom"/>
+                Margin="10" Width="156" Height="51" Background="DarkGreen"  HorizontalAlignment="Right"  VerticalAlignment="Bottom"/>
         <Button x:Name="btnUploadFirstFile" Template ="{StaticResource btTemplate}" Click="btnUploadFirstFile_Click"
                 Grid.Column="3" Grid.Row="1" 
                 Content="Сохранить отчёт" IsEnabled="False"
-                Margin="0,0,10,10" Width="156" Height="51" Background="DarkGreen" VerticalAlignment="Bottom" HorizontalAlignment="Right"  />
-        <ListBox x:Name="lstNameOperator"   
+                Margin="10" Width="156" Height="51" Background="DarkGreen" VerticalAlignment="Bottom" HorizontalAlignment="Right"  />
+        <ListBox x:Name="lstNameOperator"  ItemsSource="{Binding Name}" 
             Grid.Column="0" Grid.Row="0"   Margin="10" Width="Auto">
         </ListBox>
 
-        <Grid  Name="gridDeratorDetails" DataContext="{Binding ElementName=lstNameOperator, Path=SelectedItem}"
+        <Grid  Name="gridDeratorDetails" DataContext="{Binding}"
               Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"></ColumnDefinition>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition  Height="55"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="275*"></RowDefinition>
+                <RowDefinition Height="216*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Label Grid.Row="1" Grid.Column="1" Style="{StaticResource LabelStyle}" Content="Статистика с 1 по 15" HorizontalAlignment="Center" FontSize="20" Margin="5"/>
-            <Label Grid.Row="1" Grid.Column="2" Style="{StaticResource LabelStyle}" Content="Статистика с 16 по 31" HorizontalAlignment="Center" FontSize="20"></Label>
 
-            <Label Background="AliceBlue" Grid.Row="2" Grid.Column="0" Style="{StaticResource LabelStyle}" Content="Дней:"></Label>
-            <Label Grid.Row="3" Grid.Column="0" Style="{StaticResource LabelStyle}" Content="Пройдено:"></Label>
-            <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource LabelStyle}" Content="Оклад:"></Label>
-            <Label Grid.Row="5" Grid.Column="0" Style="{StaticResource LabelStyle}" Content="Бонус:"></Label>
-            <Label Grid.Row="6" Grid.Column="0" Style="{StaticResource LabelStyle}" Content="Бонус к выплате:" ></Label>
-            <Label Grid.Row="7" Grid.Column="0" Style="{StaticResource LabelStyle}" Content="Сумма:"></Label>
-
-            <TextBox FontSize="20" Margin="5" Grid.Column="1" Grid.Row="2" Text="{Binding Path=Days15}" ></TextBox>
-            <TextBox FontSize="20" Margin="5" Grid.Column="1" Grid.Row="3" Text="{Binding Path=Proideno15}"></TextBox>
-            <TextBox FontSize="20" Margin="5" Grid.Column="1" Grid.Row="4" Text="{Binding Path=Oklad}"></TextBox>
-            <Label FontSize="20" Margin="5" Grid.Column="1" Grid.Row="5" Content="{Binding Path=Bonus15}"></Label>
-            <Label FontSize="20" Margin="5" Grid.Column="1" Grid.Row="6" Content="{Binding Path=BonusDyas15}" ></Label>
-            <Label FontSize="20" Margin="5" Grid.Column="1" Grid.Row="7" Content="{Binding Path=Summa}" ></Label>
-
-            <TextBox FontSize="20" Margin="5" Grid.Column="2" Grid.Row="2" Text="{Binding Path=Days31}"></TextBox>
-            <TextBox FontSize="20" Margin="5" Grid.Column="2" Grid.Row="3" Text="{Binding Path=Proideno31}"></TextBox>
-            <TextBox FontSize="20" Margin="5" Grid.Column="2" Grid.Row="4" Text="{Binding Path=Oklad}"></TextBox>
-            <Label FontSize="20" Margin="5" Grid.Column="2" Grid.Row="5" Content="{Binding Path=Bonus31}"></Label>
-            <Label FontSize="20" Margin="5" Grid.Column="2" Grid.Row="6" Content="{Binding Path=BonusDyas31}"></Label>
-            <Label FontSize="20" Margin="5" Grid.Column="2" Grid.Row="7" Content="{Binding Path=Summa31}"></Label>
-
-            <Label Content="{Binding Name}" Grid.ColumnSpan="3" BorderBrush="Coral" BorderThickness="2" FontSize="25" FontFamily="Times New Roman" Height="38" Margin="10,10,22,0" VerticalAlignment="Top"/>
+            <GroupBox Grid.Column="0" Grid.Row="0" Width="auto" Margin="5" Header="C 1 по 15 число">
+                <StackPanel Margin="5">
+                    <TextBlock Margin="10"  FontFamily="Times new Roman" FontStretch="Medium" Grid.Column="2" Height="20"  FontSize="18" Text="{Binding ElementName=lstNameOperator, Path=SelectedItem}" Foreground="#FFE6660E"></TextBlock>
+                    <ListView Width="auto" Margin="10" Height="187"  Name="lstViewOperator" ItemsSource="{Binding ElementName=lstNameOperator, Path=SelectedItems}" HorizontalAlignment="Center">
+                        <ListView.View >
+                            <GridView>
+                                <GridViewColumn Header="Дней" DisplayMemberBinding="{Binding Path=Days15}"></GridViewColumn>
+                                <GridViewColumn Header="Пройдено" DisplayMemberBinding="{Binding Path=Proideno15}"></GridViewColumn>
+                                <GridViewColumn Header="Оклад" DisplayMemberBinding="{Binding Path=Oklad}"></GridViewColumn>
+                                <GridViewColumn Header="Бонус" DisplayMemberBinding="{Binding Path=Bonus15}"></GridViewColumn>
+                                <GridViewColumn Header="Оклад к выплате" DisplayMemberBinding="{Binding Path=OkladinPay15}"></GridViewColumn>
+                                <GridViewColumn Header="Бонусы 1 - 15" DisplayMemberBinding="{Binding Path=BonusDyas15}"></GridViewColumn>
+                                <GridViewColumn Header="Сумма" DisplayMemberBinding="{Binding Path=Summa}"></GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </GroupBox>
 
         </Grid>
-        <Button Template="{StaticResource btTemplate}" Background="DarkSlateGray" Content="Сохранить Изменения" Grid.Column="1" HorizontalAlignment="Left" Margin="5" Grid.Row="1" VerticalAlignment="Top" Width="168" Height="56"/>
-
-
-        <!--<DataGrid x:Name="MyDatagrid" ItemsSource="{Binding Path=operatorModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
-                  Grid.ColumnSpan="3" Grid.Row="0"  AutoGenerateColumns="True" Margin="5"   CanUserAddRows="False" />-->
-
-    </Grid>
+        <Button Template="{StaticResource btTemplate}" Background="DarkSlateGray" Content="Сохранить Изменения" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10" Grid.Row="1" Width="168"/>
+    </Grid>-->
 </Window>

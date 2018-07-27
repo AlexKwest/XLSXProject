@@ -32,6 +32,7 @@ namespace XLSXWPFForm
             InitializeComponent();
             this.name = name;
             lblName.Content = name;
+           // this.Title = name;
             this.logic = logic;
             this.Closing += Window_Closing;
         }
