@@ -6,29 +6,33 @@
         xmlns:local="clr-namespace:XLSXWPFForm"
         xmlns:model="clr-namespace:XLSXWPFForm.model" x:Class="XLSXWPFForm.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+   
     mc:Ignorable="d"
         Title="Зарплата" Height="600
     " Width="1080
-    " WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" Foreground="White">
+    " WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" Foreground="White"
+    >
 
     <Window.Resources>
         <Storyboard x:Key="MenuOpen">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
                 <EasingDoubleKeyFrame KeyTime="0" Value="60"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="220"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Key="MenuClose">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
-                <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0" Value="220"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="60"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+
         <!--<Style x:Key="LabelStyle">
 
         </Style>
         <Style TargetType="{x:Type Label}">
-            --><!--x:Key="LabelStyle">--><!--
+            x:Key="LabelStyle">
+        
             <Setter Property="Control.HorizontalAlignment" Value="Left"></Setter>
             <Setter Property="Control.VerticalAlignment" Value="Center"></Setter>
             <Setter Property="Control.FontFamily" Value="Times new roman"></Setter>
@@ -76,9 +80,9 @@
     </Window.Triggers>
 
     <Grid Background="LightGray">
-        <Grid Height="60" VerticalAlignment="Top" Background="#FF4A90C1" MouseLeftButtonDown="Window_MouseLeftButtonDown">
-            <TextBlock Text="Расчёт Зарплаты" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+        <Grid Height="60" VerticalAlignment="Top" Background="#FF4A90C1" MouseLeftButtonDown="Window_MouseLeftButtonDown" Grid.ColumnSpan="2">
+            <TextBlock Text="Расчёт Зарплаты" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Grid.Column="1" Margin="5" Height="34" Width="190"/>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,7" Height="46" Width="162">
                 <TextBlock Text="Настройки" FontSize="22" VerticalAlignment="Center"/>
                 <materialDesign:PopupBox  Margin="10" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                     <StackPanel Width="150">
@@ -90,7 +94,43 @@
                 </materialDesign:PopupBox>
             </StackPanel>
         </Grid>
-        <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#FF002C78">
+        <Grid Grid.Column="1" Grid.Row="0" Margin="0,60,0,0" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <ListBox Grid.Column="1" SelectionMode="Extended"  ItemsSource="{Binding}" Name="lstOperator" Visibility="Collapsed"  Width="200"  HorizontalAlignment="left">
+                <!--<ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Background" Value="#FF4A90C1"/>
+                        <Setter Property="Margin" Value="2"/>
+                        <Setter Property="Padding" Value="2"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="#FF002C78"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>-->
+            </ListBox>
+
+            <StackPanel Grid.ColumnSpan="2" Orientation="Vertical" Grid.Column="2" DataContext="{Binding ElementName=lstOperator, Path=SelectedItem}"/>
+
+        </Grid>
+
+
+
+        <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#FF002C78" Grid.RowSpan="2">
             <StackPanel>
                 <Grid Background="#FFFFFF" Height="60">
                     <Button x:Name="btnCloseMenu" Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed" Click="btnCloseMenu_Click">
@@ -101,7 +141,7 @@
                     </Button>
                 </Grid>
                 <Grid Height="100">
-                    
+
                 </Grid>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
                     <ListViewItem Height="60" MouseLeftButtonUp="submit_Click">
@@ -120,7 +160,7 @@
                     </ListViewItem>
                 </ListView>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
-                    <ListViewItem Height="60" Background="#FF002C78">
+                    <ListViewItem Height="60" MouseLeftButtonUp="SwitchShowOperators" Background="#FF002C78">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Account" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
                             <TextBlock Text="Операторы" VerticalAlignment="Center" Margin="20 10"/>

@@ -12,6 +12,13 @@ namespace XLSXWPFForm.model
         {
             return Name;
         }
+        public string ResultSummOperator
+        {
+            get
+            {
+                return $"{Summa} руб./{Summa31} руб.";
+            }
+        }
 
         private int premia;
         public string Name { get; set; }

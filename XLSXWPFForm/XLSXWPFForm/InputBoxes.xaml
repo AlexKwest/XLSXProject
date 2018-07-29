@@ -4,12 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XLSXWPFForm"
-        mc:Ignorable="d"
-        Title="Ввод Оклада Сотрудника" Height="96.262" Width="424.384" Closing="Window_Closing" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <Grid  Margin="0,0,0,0">
-        <StackPanel Margin="5" Orientation="Horizontal" Height="auto">
-            <Label x:Name="lblName" Margin="5" Height="auto" Width="278" Content="ФИО:" Background="{x:Null}" FontSize="14" VerticalAlignment="Center"/>
-            <ComboBox x:Name="cmbOklad" Text="6250" Height="auto" Width="auto" Margin="5,15,5,19" SelectedIndex="-1" SelectionChanged="cmbOklad_SelectionChanged" VerticalAlignment="Center" HorizontalAlignment="Right"  >
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d" Height="79.262" Width="349.884" Closing="Window_Closing" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None"
+        BorderBrush="Black" BorderThickness="1">
+
+    <Grid  Background="LightGray" Margin="0,0,0,0">
+        <Grid VerticalAlignment="Top" Height="30" Background="#FF4A90C1" Name="grdInputBoxes" MouseLeftButtonDown="grdInputBoxes_MouseLeftButtonDown">
+            <TextBlock Name="txtTitleForm" Text="Введите оклад оператора" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Margin="5" Width="auto"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnExit" Width="25" Height="25" Margin="2" Padding="0" Click="btnExit_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+                    <materialDesign:PackIcon Kind="Power" />
+                </Button>
+            </StackPanel>
+        </Grid>
+        <StackPanel Margin="5" Orientation="Horizontal" Height="auto" Grid.RowSpan="2">
+            <Label x:Name="lblName" BorderBrush="#FF4A90C1" BorderThickness="1" Margin="5,0,5,5" Height="auto" Width="269" Content="ФИО:" Background="{x:Null}" FontSize="14" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+            <ComboBox BorderBrush="#FF4A90C1" BorderThickness="1" x:Name="cmbOklad" Text="6250" Height="auto" Width="50" Margin="5" FontSize="14" SelectedIndex="-1" SelectionChanged="cmbOklad_SelectionChanged" VerticalAlignment="Bottom" HorizontalAlignment="Right"  >
                 <ComboBoxItem HorizontalAlignment="Right" Content="6250"/>
                 <ComboBoxItem HorizontalAlignment="Right" Content="10000"/>
             </ComboBox>

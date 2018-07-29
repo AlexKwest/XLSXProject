@@ -72,6 +72,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="FormDialogs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InputBoxes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -85,6 +89,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="EnumResult.cs" />
+    <Compile Include="FormDialogs.xaml.cs">
+      <DependentUpon>FormDialogs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InputBoxes.xaml.cs">
       <DependentUpon>InputBoxes.xaml</DependentUpon>
     </Compile>
@@ -120,7 +127,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Dribbble.ico" />

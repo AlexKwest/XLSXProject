@@ -61,16 +61,11 @@ namespace XLSXWPFForm
                 logic = new Logic(demoPathIn);
                 EnumResult.InputOklad result;
 
-                if (MessageBox.Show("Ввести Оклад по умолчанию \n или ввести вручную?", "Выберите", MessageBoxButton.YesNo,
-                    MessageBoxImage.Question) == MessageBoxResult.Yes)
-                    result = EnumResult.InputOklad.Default;
-                else
-                    result = EnumResult.InputOklad.Input;
-
+                result = (new FormDialogs().ShowDialog()) == true? EnumResult.InputOklad.Input : EnumResult.InputOklad.Default;
                 operatorModels = new ObservableCollection<OperatorModel>(logic.SetOperatorList(result));
-
-                   //lstNameOperator.ItemsSource = operatorModels;
-                this.DataContext = operatorModels;
+               
+                //   lstOperator.ItemsSource = operatorModels;
+               this.DataContext = operatorModels.OrderBy(p => p.Name);
             }
         }
 
@@ -96,6 +91,11 @@ namespace XLSXWPFForm
                 }
             }
         }
+        private void SwitchShowOperators(object sender, RoutedEventArgs e)
+        {
+            lstOperator.Visibility = lstOperator.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         private void list_Selected(object sender, RoutedEventArgs e)
         {
             //lstViewOperator.Items.Clear();
