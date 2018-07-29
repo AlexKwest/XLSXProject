@@ -64,8 +64,10 @@ namespace XLSXWPFForm
                 result = (new FormDialogs().ShowDialog()) == true? EnumResult.InputOklad.Input : EnumResult.InputOklad.Default;
                 operatorModels = new ObservableCollection<OperatorModel>(logic.SetOperatorList(result));
                
-                //   lstOperator.ItemsSource = operatorModels;
-               this.DataContext = operatorModels.OrderBy(p => p.Name);
+               //lstOperator.ItemsSource = operatorModels;
+               this.DataContext = from t in operatorModels
+                                  where t.Days15 > 0 || t.Days31 > 0 
+                                  select t;
             }
         }
 

@@ -120,6 +120,23 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="font\Caveat-Bold.ttf" />
+    <Resource Include="font\Caveat-Regular.ttf" />
+    <Resource Include="font\Jura-Bold.ttf" />
+    <Resource Include="font\Jura-Light.ttf" />
+    <Resource Include="font\Jura-Medium.ttf" />
+    <Resource Include="font\Jura-Regular.ttf" />
+    <Resource Include="font\Jura-SemiBold.ttf" />
+    <Resource Include="font\KellySlab-Regular.ttf" />
+    <Resource Include="font\MarckScript-Regular.ttf" />
+    <Resource Include="font\Pacifico-Regular.ttf" />
+    <Resource Include="font\Pattaya-Regular.ttf" />
+    <Resource Include="font\PressStart2P-Regular.ttf" />
+    <Resource Include="font\RubikMonoOne-Regular.ttf" />
+    <Resource Include="font\RuslanDisplay.ttf" />
+    <Resource Include="font\RussoOne-Regular.ttf" />
+    <Resource Include="font\StalinistOne-Regular.ttf" />
+    <Resource Include="font\Underdog-Regular.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

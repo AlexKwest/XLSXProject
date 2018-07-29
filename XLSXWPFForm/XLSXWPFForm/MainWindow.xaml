@@ -27,6 +27,10 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
 
+        <Style x:Key="Pattaya-Regular">
+            <Setter Property="TextElement.FontFamily" Value="Resources/Pattaya-Regular.ttf" />
+        </Style>
+        
         <!--<Style x:Key="LabelStyle">
 
         </Style>
@@ -79,9 +83,11 @@
         </EventTrigger>
     </Window.Triggers>
 
+
+    
     <Grid Background="LightGray">
         <Grid Height="60" VerticalAlignment="Top" Background="#FF4A90C1" MouseLeftButtonDown="Window_MouseLeftButtonDown" Grid.ColumnSpan="2">
-            <TextBlock Text="Расчёт Зарплаты" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Grid.Column="1" Margin="5" Height="34" Width="190"/>
+            <TextBlock FontFamily="./#Caveat-Bold" Text="Расчёт Зарплаты" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Grid.Column="1" Margin="5" Height="34" Width="190"/>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,7" Height="46" Width="162">
                 <TextBlock Text="Настройки" FontSize="22" VerticalAlignment="Center"/>
                 <materialDesign:PopupBox  Margin="10" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
@@ -99,7 +105,8 @@
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
+
             <Grid Grid.Column="1" DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"></ColumnDefinition>
@@ -109,12 +116,57 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
-                <ListBox Name="lstOperator" Grid.Column="0" SelectionMode="Extended"  ItemsSource="{Binding}" Visibility="Collapsed"  Width="200"  HorizontalAlignment="left" >
-
+                <ListBox Name="lstOperator" ItemsSource="{Binding}" Grid.Column="0" Grid.RowSpan="2" Visibility="Collapsed"  Width="200"  HorizontalAlignment="left" >
                 </ListBox>
+                <!--<Grid DataContext="{Binding ElementName=lstOperator, Path=SelectedItem}">
+                <StackPanel>
+                <StackPanel>
+                <TextBlock Foreground="Black" Text="{Binding Bonus15}"></TextBlock>
+                </StackPanel>
+                </StackPanel>
+                </Grid>-->
+                <Grid Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Height="138" DataContext="{Binding ElementName=lstOperator, Path=SelectedItem}">
+                    <Rectangle  Height="120" Margin="3" Fill="White" RadiusY="10" RadiusX="10">
+                        <Rectangle.Effect>
+                            <DropShadowEffect BlurRadius="50" RenderingBias="Quality" ShadowDepth="7" Opacity="0.4"/>
+                        </Rectangle.Effect>
+                    </Rectangle>
+                    <Grid Margin="0,9,3,9" Height="120">
+                        <Grid Width="50" Background="#FFDAA024" Height="71" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="23,0,0,49">
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="20" Color="#FFDEDCDC" RenderingBias="Quality" ShadowDepth="1"/>
+                            </Grid.Effect>
+                            <materialDesign:PackIcon Kind="Cash100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="White" Margin="3 0" Width="44" Height="44"/>
+                        </Grid>
+                        <TextBlock  FontWeight="Bold" Text="Сумма за первую часть" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Gray" FontFamily="Times new Roman" Margin="5"></TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
+                            <TextBlock Text="{Binding Summa}"   Foreground="Gray" FontFamily="Elephant" FontSize="40" Margin="1"></TextBlock>
+                            <TextBlock Text="руб"  Foreground="Gray" FontFamily="Adobe Caslon Pro Bold" FontSize="20" Margin="5 0 0 0" VerticalAlignment="Center" ></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5">
+                            <StackPanel Orientation="Horizontal" Width="110">
+                                <materialDesign:PackIcon Kind="Wallet" Foreground="Gray" Width="20" Margin="0 0" Height="20" VerticalAlignment="Center"></materialDesign:PackIcon>
+                                <TextBlock FontWeight="Bold" FontSize="15" Text="Бонус:" Foreground="#FFDAA024" Margin="5 0" VerticalAlignment="Center"> </TextBlock>
+                                <TextBlock   FontSize="15" Name="txtBonus" Foreground="Gray" Text="{Binding Bonus15}" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="0 0 20 0" TextDecorations="Underline" FontFamily="Showcard Gothic"></TextBlock>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="WalletTravel" Foreground="Gray" Width="20" Margin="5 0" Height="20" VerticalAlignment="Center" HorizontalAlignment="Right"></materialDesign:PackIcon>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock FontWeight="Bold" FontSize="11" Text="Пройдено:" Foreground="#FFDAA024" Margin="0 0" HorizontalAlignment="Right"></TextBlock>
+                                    <TextBlock FontWeight="Bold" FontSize="11" Text="Бонусы (руб):" Foreground="#FFDAA024" Margin="0 0" HorizontalAlignment="Right"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock  FontWeight="Bold" FontSize="11" Name="txtProideno15" Foreground="Gray" Text="{Binding Proideno15}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0 0 0"></TextBlock>
+                                    <TextBlock  FontWeight="Bold" FontSize="11" Name="txtBonusSumma" Foreground="Gray" Text="{Binding BonusDyas15}"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0 0 0"></TextBlock>
+                                </StackPanel>
 
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
 
+                </Grid>
 
             </Grid>
 
