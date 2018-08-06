@@ -25,9 +25,9 @@ namespace XLSXWPFForm
         string errortitle = "Ошибка Заголовка";//error messagebox heading title
         public string OklasResult;
         bool clicked = false;
-        Logic logic;
+        LogicOperator logic;
 
-        public InputBoxes(string name, Logic logic)
+        public InputBoxes(string name, LogicOperator logic)
         {
             InitializeComponent();
             this.name = name;

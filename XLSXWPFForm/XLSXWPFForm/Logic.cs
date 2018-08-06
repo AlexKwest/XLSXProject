@@ -18,6 +18,10 @@ namespace XLSXWPFForm
     {
         ExcelPackage excelIn;
         ExcelPackage excelOut;
+
+        ExcelPackage excelInBase;
+        ExcelPackage excelInFirst;
+
         ExcelWorksheet worksheet;
 
         ExcelWorksheet motivashion;
@@ -34,17 +38,32 @@ namespace XLSXWPFForm
             excelOut = new ExcelPackage();
             operatorModels = new List<OperatorModel>();
         }
-
-      
-        public List<OperatorModel> SetOperatorList(EnumResult.InputOklad inputOklad)
+        public Logic(string[] FilePathIn)
         {
-            this.inputOklad = inputOklad;
-            GetListSheet(1, 62);
-            GetListSheet(2, 130);
-            return operatorModels;
+            excelInBase = new ExcelPackage(new FileInfo(FilePathIn[0]));
+            excelInFirst = new ExcelPackage(new FileInfo(FilePathIn[1]));
+
+            excelOut = new ExcelPackage();
+            operatorModels = new List<OperatorModel>();
         }
 
-        private void GetListSheet(int numberSheet, int proideno)
+        //public List<OperatorModel> SetOperatorList(EnumResult.InputOklad inputOklad)
+        //{
+        //    this.inputOklad = inputOklad;
+        //    GetListSheet(1);
+        //    GetListSheet(2);
+        //    return operatorModels;
+        //}
+
+        //public List<operatorFirstResult> SetOperatorFirstMonthList(EnumResult.InputOklad inputOklad)
+        //{
+        //    this.inputOklad = inputOklad;
+        //    GetListSheet(1);
+        //    GetListSheet(2);
+        //    return operatorModels;
+        //}
+
+        private void GetListSheet(int numberSheet)
         {
             worksheet = excelIn.Workbook.Worksheets[numberSheet];
 
@@ -60,13 +79,35 @@ namespace XLSXWPFForm
 
         private bool GetValueDay(int row, int proideno)
         {
-            return Convert.ToInt32(worksheet.Cells[row, proideno].Value) != 0 ? true : false;
+            return true;
+           // return Convert.ToInt32(worksheet.Cells[row, proideno].Value) != 0 ? true : false;
         }
 
         private bool GetValueOperator(int row)
         {
             return worksheet.Cells[row, 1].Value != null ? true : false;
         }
+
+        private OperatorFirstMonthModel GetOperatorFirstMonth(int row)
+        {
+            var result = new OperatorFirstMonthModel();
+            result.Name = worksheet.Cells[row, 1].Value.ToString();
+            result.Day = Convert.ToInt32(worksheet.Cells[row, 62].Value);
+            result.Finished = Convert.ToInt32(worksheet.Cells[row, 64].Value);
+
+            if (inputOklad == EnumResult.InputOklad.Input)
+            {
+                //var dialog = new InputBoxes(result.Name, this);
+                //dialog.ShowDialog();
+                //result.Oklad = Convert.ToInt32(dialog.OklasResult);
+            }
+            else if (inputOklad == EnumResult.InputOklad.Default)
+            {
+                result.Oklad = 6250;
+            }
+            return result;
+        }
+
 
         private OperatorModel SetOperator(int row)
         {
@@ -77,13 +118,12 @@ namespace XLSXWPFForm
 
             if (inputOklad == EnumResult.InputOklad.Input)
             {
-                var dialog = new InputBoxes(result.Name, this);
-                dialog.ShowDialog();
-                result.Oklad = Convert.ToInt32(dialog.OklasResult);
+                //var dialog = new InputBoxes(result.Name, this);
+                //dialog.ShowDialog();
+                //result.Oklad = Convert.ToInt32(dialog.OklasResult);
             }
             else if (inputOklad == EnumResult.InputOklad.Default)
             {
-                // TODO: На время отладки    
                 result.Oklad = 6250;
             }
 
@@ -159,7 +199,7 @@ namespace XLSXWPFForm
                 motivashion.Cells[2, 5, 2, 7].Merge = true;
                 motivashion.SetValue(2, 5, "С 1-15 оклад");
                 motivashion.SetValue(3, 5, "от"); motivashion.SetValue(3, 6, "до"); motivashion.SetValue(3, 7, "сумма");
-                motivashion.SetValue(4, 5, 1); motivashion.SetValue(4, 6, 4); motivashion.SetValue(4, 7, 50);
+                motivashion.SetValue(4, 5, 1); motivashion.SetValue(4, 6, 10); motivashion.SetValue(4, 7, 50);
                 motivashion.SetValue(5, 5, 11); motivashion.SetValue(5, 7, 100);
                 #endregion
                 #region Премия
@@ -231,13 +271,11 @@ namespace XLSXWPFForm
             newSheet.SetValue(1, 12, "Бонусы к выплате");
             newSheet.SetValue(1, 13, "Премия");
             newSheet.SetValue(1, 14, "Сумма к выплате");
-#endregion
+            #endregion
             result = QueryTable(EnumResult.PrintFile.TwoMonth);
 
             foreach (var cell in result)
             {
-                if (cell.Name != MainWindow.poteriashka)
-                {
                     newSheet.SetValue(row, col++, cell.Name);
                     newSheet.SetValue(row, col++, cell.Days31);
                     newSheet.SetValue(row, col++, cell.Proideno31);
@@ -266,12 +304,12 @@ namespace XLSXWPFForm
                     newSheet.Cells[row, col++].Formula = "=" + newSheet.Cells[row, 6].Address + "+" + newSheet.Cells[row, 12].Address + "+" + newSheet.Cells[row, 13].Address;
                     col = 1;
                     row++;
-                }
             }
 
             newSheet.SetValue(row + 3, 1, "Распределите очки Потеряшки: " + GetPointPoteriashka(EnumResult.PrintFile.TwoMonth));
             StyleTable("A1:N", 14);
         }
+
 
         private IEnumerable<OperatorModel> QueryTable(EnumResult.PrintFile type)
         {
@@ -280,12 +318,12 @@ namespace XLSXWPFForm
                 case EnumResult.PrintFile.FirsMonth:
                     return
                             from t in operatorModels
-                            where t.Name != MainWindow.poteriashka && t.Days15 > 0
+                            where t.Name != MainWindow.poteriashka && (t.Days15 > 0 || t.Proideno15 > 0)
                             select t;
             }
             return
                     from t in operatorModels
-                    where t.Name != MainWindow.poteriashka && t.Days31 > 0
+                    where t.Name != MainWindow.poteriashka && (t.Days31 > 0 || t.Proideno31 > 0 )
                     select t;
         }
 
@@ -304,13 +342,11 @@ namespace XLSXWPFForm
             newSheet.SetValue(1, 6, "Оклад к выплате");
             newSheet.SetValue(1, 7, "Бонусы 1 - 15");
             newSheet.SetValue(1, 8, "Сумма");
-#endregion
+            #endregion
 
             result = QueryTable(EnumResult.PrintFile.FirsMonth);
             foreach (var cell in result)
             {
-                if (cell.Name != MainWindow.poteriashka)
-                {
                     newSheet.SetValue(row, col++, cell.Name);
                     newSheet.SetValue(row, col++, cell.Days15);
                     newSheet.SetValue(row, col++, cell.Proideno15);
@@ -336,7 +372,6 @@ namespace XLSXWPFForm
                     //wr.SetValue(row, col++, cell.Summa);
                     col = 1;
                     row++;
-                }
             }
             newSheet.SetValue(row + 3, 1, "Распределите очки Потеряшки: " + GetPointPoteriashka(EnumResult.PrintFile.FirsMonth));
             StyleTable("A1:H", 8);

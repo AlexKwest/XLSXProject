@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:XLSXWPFForm"
         xmlns:model="clr-namespace:XLSXWPFForm.model" x:Class="XLSXWPFForm.MainWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
    
     mc:Ignorable="d"
-        Title="Зарплата" Height="600
-    " Width="1080
+        Title="Зарплата" Height="702" Width="1080
     " WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" Foreground="White"
     >
 
@@ -30,7 +30,15 @@
         <Style x:Key="Pattaya-Regular">
             <Setter Property="TextElement.FontFamily" Value="Resources/Pattaya-Regular.ttf" />
         </Style>
-        
+
+        <Style x:Key="LabelDiagram" TargetType="Label">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="LightGray"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Adobe Caslon Pro Bold" />
+        </Style>
+
         <!--<Style x:Key="LabelStyle">
 
         </Style>
@@ -83,8 +91,6 @@
         </EventTrigger>
     </Window.Triggers>
 
-
-    
     <Grid Background="LightGray">
         <Grid Height="60" VerticalAlignment="Top" Background="#FF4A90C1" MouseLeftButtonDown="Window_MouseLeftButtonDown" Grid.ColumnSpan="2">
             <TextBlock FontFamily="./#Caveat-Bold" Text="Расчёт Зарплаты" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Grid.Column="1" Margin="5" Height="34" Width="190"/>
@@ -106,7 +112,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-
+            <!-- Work Grid-->
             <Grid Grid.Column="1" DataContext="{Binding}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"></ColumnDefinition>
@@ -115,18 +121,13 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="91*"></RowDefinition>
+                    <RowDefinition Height="230*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <ListBox Name="lstOperator" ItemsSource="{Binding}" Grid.Column="0" Grid.RowSpan="2" Visibility="Collapsed"  Width="200"  HorizontalAlignment="left" >
                 </ListBox>
-                <!--<Grid DataContext="{Binding ElementName=lstOperator, Path=SelectedItem}">
-                <StackPanel>
-                <StackPanel>
-                <TextBlock Foreground="Black" Text="{Binding Bonus15}"></TextBlock>
-                </StackPanel>
-                </StackPanel>
-                </Grid>-->
+
+                <!-- Widget-->
                 <Grid Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Height="138" DataContext="{Binding ElementName=lstOperator, Path=SelectedItem}">
                     <Rectangle  Height="120" Margin="3" Fill="White" RadiusY="10" RadiusX="10">
                         <Rectangle.Effect>
@@ -148,8 +149,8 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5">
                             <StackPanel Orientation="Horizontal" Width="110">
                                 <materialDesign:PackIcon Kind="Wallet" Foreground="Gray" Width="20" Margin="0 0" Height="20" VerticalAlignment="Center"></materialDesign:PackIcon>
-                                <TextBlock FontWeight="Bold" FontSize="15" Text="Бонус:" Foreground="#FFDAA024" Margin="5 0" VerticalAlignment="Center"> </TextBlock>
-                                <TextBlock   FontSize="15" Name="txtBonus" Foreground="Gray" Text="{Binding Bonus15}" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="0 0 20 0" TextDecorations="Underline" FontFamily="Showcard Gothic"></TextBlock>
+                                <TextBlock FontWeight="Bold" FontSize="15" Text="Бонус:" Foreground="#FFDAA024" Margin="5 0" VerticalAlignment="Center"></TextBlock>
+                                <TextBlock   FontSize="15" Name="txtBonus" Foreground="Gray" Text="{Binding Bonus}" VerticalAlignment="Center"  HorizontalAlignment="Left" Margin="0 0 20 0" TextDecorations="Underline" FontFamily="Showcard Gothic"></TextBlock>
                             </StackPanel>
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="WalletTravel" Foreground="Gray" Width="20" Margin="5 0" Height="20" VerticalAlignment="Center" HorizontalAlignment="Right"></materialDesign:PackIcon>
@@ -158,22 +159,84 @@
                                     <TextBlock FontWeight="Bold" FontSize="11" Text="Бонусы (руб):" Foreground="#FFDAA024" Margin="0 0" HorizontalAlignment="Right"></TextBlock>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock  FontWeight="Bold" FontSize="11" Name="txtProideno15" Foreground="Gray" Text="{Binding Proideno15}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0 0 0"></TextBlock>
-                                    <TextBlock  FontWeight="Bold" FontSize="11" Name="txtBonusSumma" Foreground="Gray" Text="{Binding BonusDyas15}"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0 0 0"></TextBlock>
+                                    <TextBlock  FontWeight="Bold" FontSize="11" Name="txtProideno15" Foreground="Gray" Text="{Binding Finished}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0 0 0"></TextBlock>
+                                    <TextBlock  FontWeight="Bold" FontSize="11" Name="txtBonusSumma" Foreground="Gray" Text="{Binding BonusDyas}"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="6 0 0 0"></TextBlock>
                                 </StackPanel>
-
                             </StackPanel>
                         </StackPanel>
                     </Grid>
 
                 </Grid>
 
+                <!-- Graph Body-->
+                <Grid Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
+                    <Grid Margin="3,50,0,50">
+                        <Grid.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=BorderG1}"/>
+                        </Grid.OpacityMask>
+                        <Border x:Name="BorderG1"  CornerRadius="10" Background="White"/>
+                    </Grid>
+                    <!-- Graph -->
+                    <Grid  Margin="30,10,30,110" DataContext="{Binding ElementName=lstOperator, Path=SelectedItems}">
+                        <Grid.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=BorderG2}"/>
+                        </Grid.OpacityMask>
+                        <Border x:Name="BorderG2" CornerRadius="15" Background="#FF431980"></Border>
+                        <StackPanel Orientation="Horizontal">
+                        <chart:RadialGaugeChart Width="250" HorizontalAlignment="Left" Name="chartDiagramm" Background="{x:Null}" ChartTitle="Показатели" ChartSubTitle="До Максимальной Премии" Foreground="LightGray">
+                            <chart:RadialGaugeChart.Series >
+                                <chart:ChartSeries 
+                                    DisplayMember="Name"
+                                    ItemsSource="{Binding}"
+                                    
+                                    SeriesTitle="SeriesTitle"
+                                    ValueMember="PercentPremia"
+                                    />
+                                </chart:RadialGaugeChart.Series>
+                        </chart:RadialGaugeChart>
+                            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Width="200" DataContext="{Binding ElementName=lstOperator, Path=SelectedItem}">
+                                <StackPanel Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Премия" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding Premia}" />
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Пройдено всего" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding ProidenoAll}"/>
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Оклад" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding Oklad}"/>
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Оклад с 16-31" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding OkladinPay31}"/>
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Бонусы 16-31" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding BonusDyas31}"/>
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Доплата 1-15" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding DoplataLastPeriod}"/>
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Бонусы к выплате" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding BonusInPay}"/>
+                                </StackPanel>
+                                <StackPanel  Margin="0 5" HorizontalAlignment="Left" Orientation="Horizontal" Width="200">
+                                    <Label Style="{StaticResource LabelDiagram}" Content="Сумма 16-31" />
+                                    <Label Style="{StaticResource LabelDiagram}" Content="{Binding Summa31}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <TextBlock Name="txtBonu" Text="{Binding Premia}" Foreground="White" FontSize="20"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
             </Grid>
 
         </Grid>
 
-
-
+        <!-- Verical menu-->
         <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#FF002C78" Grid.RowSpan="2">
             <StackPanel>
                 <Grid Background="#FFFFFF" Height="60">
@@ -188,7 +251,7 @@
 
                 </Grid>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
-                    <ListViewItem Height="60" MouseLeftButtonUp="submit_Click">
+                    <ListViewItem Height="60" MouseLeftButtonUp="btnLoadBaseOperator_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon  Kind="FolderDownload" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
                             <TextBlock Text="Загрузить отчёт" VerticalAlignment="Center" Margin="20 10"/>
@@ -196,13 +259,33 @@
                     </ListViewItem>
                 </ListView>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
-                    <ListViewItem Height="60" MouseLeftButtonUp="btnUploadFirstFile_Click">
+                    <ListViewItem Height="60" MouseLeftButtonUp="btnSaveFirstFile_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="ContentSave" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
                             <TextBlock Text="Сохранить зарплату" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </ListViewItem>
                 </ListView>
+                <Separator/>
+
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
+                    <ListViewItem Height="60" MouseLeftButtonUp="btnLoadTwoOperator_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="File" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
+                            <TextBlock Text="Отчет с 1 по 15" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
+                    <ListViewItem Height="60" MouseLeftButtonUp="btnSaveTwoFile_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ContentSaveAll" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
+                            <TextBlock Text="Сохранить второй отчёт" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+                <Separator/>
+
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
                     <ListViewItem Height="60" MouseLeftButtonUp="SwitchShowOperators" Background="#FF002C78">
                         <StackPanel Orientation="Horizontal">
@@ -212,7 +295,7 @@
                     </ListViewItem>
                 </ListView>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#FF4A90C1">
-                    <ListViewItem Height="60">
+                    <ListViewItem Height="60" MouseUp="GetUnionDictynary">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="ChartArc" Margin="10" Width="25" Height="25" VerticalAlignment="Center"></materialDesign:PackIcon>
                             <TextBlock Text="Статистика" VerticalAlignment="Center" Margin="20 10"/>

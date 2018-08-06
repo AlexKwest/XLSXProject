@@ -19,7 +19,6 @@ namespace XLSXWPFForm.model
                 return $"{Summa} руб./{Summa31} руб.";
             }
         }
-
         private int premia;
         public string Name { get; set; }
         public int Days15 { get; set; } 
@@ -174,6 +173,15 @@ namespace XLSXWPFForm.model
             get
             {
                 return BonusInPay + Premia + OkladinPay31;
+            }
+        }
+
+        public double PercentPremia
+        {
+            get
+            {
+                var result = (double)100 / 35 * ProidenoAll;
+                return result > 100 ? 100 : result;
             }
         }
     }

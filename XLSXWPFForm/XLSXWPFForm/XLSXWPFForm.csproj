@@ -37,6 +37,9 @@
     <ApplicationIcon>OS Windows.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="De.TorstenMandelkow.MetroChart, Version=0.9.5818.20693, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ModernUICharts.WPF.Beta.0.9.1\lib\De.TorstenMandelkow.MetroChart.dll</HintPath>
+    </Reference>
     <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
@@ -72,6 +75,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="LogicOperator.cs" />
+    <Compile Include="ManedgerModel.cs" />
+    <Compile Include="model\AbstractModel.cs" />
+    <Compile Include="model\Fabrica\AbstractWorksheet.cs" />
+    <Compile Include="model\Fabrica\FabricaFirstMonth.cs" />
+    <Compile Include="model\Fabrica\FabricaTwoMonth.cs" />
+    <Compile Include="model\OperatorFirstMonthModel.cs" />
+    <Compile Include="model\OperatorTwoMonthModel.cs" />
+    <Compile Include="UnionDictynary.cs" />
     <Page Include="FormDialogs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
